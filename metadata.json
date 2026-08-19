@@ -1,0 +1,8 @@
+{
+  "name": "OmniMetrics Hub",
+  "description": "High-precision financial calculators and business tools for freelancers, founders, and marketers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
