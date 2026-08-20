@@ -1,19 +1,27 @@
-import React, { useState, useMemo } from 'react';
+import { useState } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { CurrencySymbol, CategoryType, ToolItem, ArticleItem, LanguageCode } from './types';
 import { TOOLS_DATA } from './data/tools';
-import { TRANSLATIONS } from './data/translations';
 import { Header } from './components/Header';
 import { DockNav } from './components/DockNav';
 import { RightSidebarAd } from './components/RightSidebarAd';
-import { Hero } from './components/Hero';
-import { ToolCard } from './components/ToolCard';
-import { ValueProps } from './components/ValueProps';
-import { CompleteGuideSection } from './components/CompleteGuideSection';
-import { AdBanner } from './components/AdBanner';
-import { KnowledgeSection } from './components/KnowledgeSection';
-import { FaqSection } from './components/FaqSection';
 import { Footer } from './components/Footer';
 import { FloatingActionButton } from './components/FloatingActionButton';
+import { ScrollToTop } from './components/ScrollToTop';
+import { ConsentBanner } from './components/ConsentBanner';
+import { ErrorBoundary } from './components/ErrorBoundary';
+
+// Pages
+import { HomePage } from './pages/HomePage';
+import { CalculatorPage } from './pages/CalculatorPage';
+import { CalculatorsIndexPage } from './pages/CalculatorsIndexPage';
+import { GuidePage } from './pages/GuidePage';
+import { AboutPage } from './pages/AboutPage';
+import { ContactPage } from './pages/ContactPage';
+import { LegalPage } from './pages/LegalPage';
+import { NotFoundPage } from './pages/NotFoundPage';
+
+// Modals
 import { CalculatorModal } from './components/modals/CalculatorModal';
 import { ArticleModal } from './components/modals/ArticleModal';
 import { SuggestModal } from './components/modals/SuggestModal';
@@ -21,6 +29,7 @@ import { ContactModal } from './components/modals/ContactModal';
 import { LegalModal, LegalTabType } from './components/modals/LegalModal';
 
 export default function App() {
+  const navigate = useNavigate();
   const [currency, setCurrency] = useState<CurrencySymbol>('$');
   const [language, setLanguage] = useState<LanguageCode>('US');
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('ALL');
@@ -33,65 +42,46 @@ export default function App() {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [legalModalTab, setLegalModalTab] = useState<LegalTabType | null>(null);
 
-  const t = TRANSLATIONS[language] || TRANSLATIONS.US;
-
-  // Filter tools
-  const filteredTools = useMemo(() => {
-    return TOOLS_DATA.filter((tool) => {
-      const matchesCategory =
-        selectedCategory === 'ALL' || tool.category === selectedCategory;
-      const q = searchQuery.trim().toLowerCase();
-      const matchesQuery =
-        !q ||
-        tool.name.toLowerCase().includes(q) ||
-        tool.description.toLowerCase().includes(q) ||
-        tool.category.toLowerCase().includes(q) ||
-        tool.tags.some((tag) => tag.toLowerCase().includes(q));
-
-      return matchesCategory && matchesQuery;
-    });
-  }, [selectedCategory, searchQuery]);
-
   const handleReset = () => {
     setSelectedCategory('ALL');
     setSearchQuery('');
+    navigate('/');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSearchFocus = () => {
-    const input = document.getElementById('header-search');
-    if (input) {
-      input.focus();
-    }
-    const toolsGrid = document.getElementById('tools-grid');
-    if (toolsGrid) {
-      toolsGrid.scrollIntoView({ behavior: 'smooth' });
-    }
+    navigate('/');
+    setTimeout(() => {
+      const input = document.getElementById('header-search');
+      if (input) input.focus();
+      const toolsGrid = document.getElementById('tools-grid');
+      if (toolsGrid) toolsGrid.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   const scrollToTools = () => {
-    const toolsGrid = document.getElementById('tools-grid');
-    if (toolsGrid) {
-      toolsGrid.scrollIntoView({ behavior: 'smooth' });
-    }
+    navigate('/calculators');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const scrollToKnowledge = () => {
-    const section = document.getElementById('blog-section');
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
+    navigate('/');
+    setTimeout(() => {
+      const section = document.getElementById('blog-section');
+      if (section) section.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   const scrollToFaq = () => {
-    const section = document.getElementById('faq-section');
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
+    navigate('/');
+    setTimeout(() => {
+      const section = document.getElementById('faq-section');
+      if (section) section.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   const handleOpenToolById = (toolId: string) => {
-    const tool = TOOLS_DATA.find((t) => t.id === toolId);
+    const tool = TOOLS_DATA.find((t) => t.id === toolId || t.slug === toolId);
     if (tool) {
       setActiveTool(tool);
     }
@@ -99,6 +89,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between selection:bg-emerald-500 selection:text-white relative">
+      <ScrollToTop />
+
       {/* Left Quick-Dock Navigation (Desktop) */}
       <DockNav
         onHomeClick={handleReset}
@@ -106,14 +98,14 @@ export default function App() {
         onCalculatorsClick={scrollToTools}
         onKnowledgeClick={scrollToKnowledge}
         onFaqClick={scrollToFaq}
-        onContactClick={() => setIsContactOpen(true)}
+        onContactClick={() => navigate('/contact')}
         onSuggestClick={() => setIsSuggestOpen(true)}
       />
 
       {/* Right Skyscraper Advertisement (Desktop 160x600 AdSense Ready) */}
       <RightSidebarAd />
 
-      {/* 1. Top Header */}
+      {/* Top Header */}
       <Header
         currency={currency}
         onCurrencyChange={setCurrency}
@@ -122,83 +114,77 @@ export default function App() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onReset={handleReset}
-        onOpenContact={() => setIsContactOpen(true)}
+        onOpenContact={() => navigate('/contact')}
       />
 
-      {/* Main Content following clean non-overlapping responsive layout */}
+      {/* Main Content Area */}
       <main className="max-w-5xl xl:max-w-[960px] 2xl:max-w-6xl mx-auto px-4 sm:px-6 pt-6 flex-1 w-full pb-16">
-        
-        {/* Hero Section */}
-        <Hero
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-          language={language}
-        />
-
-        {/* Calculators Grid (with In-Grid Ad Slot) */}
-        <div
-          id="tools-grid"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 scroll-mt-24"
-        >
-          {filteredTools.map((tool, index) => (
-            <React.Fragment key={tool.id}>
-              <ToolCard
-                tool={tool}
-                onLaunch={setActiveTool}
-              />
-              {/* Slot 2: In-Grid native banner positioned between the calculator tools */}
-              {index === 2 && (
-                <AdBanner slot="in-grid" title="Corporate Treasury & Global FX" />
-              )}
-            </React.Fragment>
-          ))}
-
-          {filteredTools.length === 0 && (
-            <div className="col-span-full text-center py-16 bg-white rounded-3xl border border-slate-200 p-8">
-              <p className="text-sm font-bold text-slate-700">
-                {t.noResults}
-              </p>
-              <button
-                type="button"
-                onClick={handleReset}
-                className="mt-3 px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition"
-              >
-                {t.clearFilters}
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* 2. Value Props Section (3 Cards) */}
-        <ValueProps />
-
-        {/* 3. The Complete Guide to Financial Calculations (2-Column SEO Text Grid) */}
-        <CompleteGuideSection onOpenCalculator={handleOpenToolById} />
-
-        {/* Mid-page Horizontal Ad Slot (Slot 3) */}
-        <AdBanner slot="mid-page" />
-
-        {/* Financial Guides & Merchant Insights (Knowledge Base Cards) */}
-        <KnowledgeSection
-          onSelectArticle={setActiveArticle}
-          language={language}
-        />
-
-        {/* FAQ Section */}
-        <FaqSection language={language} />
-
-        {/* Bottom Horizontal Ad Slot (Slot 4) */}
-        <AdBanner slot="bottom" />
-
+        <ErrorBoundary>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <HomePage
+                  currency={currency}
+                  language={language}
+                  selectedCategory={selectedCategory}
+                  onSelectCategory={setSelectedCategory}
+                  searchQuery={searchQuery}
+                  onResetSearch={handleReset}
+                  onLaunchTool={setActiveTool}
+                  onSelectArticle={setActiveArticle}
+                  onOpenToolById={handleOpenToolById}
+                />
+              }
+            />
+            <Route
+              path="/calculators"
+              element={<CalculatorsIndexPage currency={currency} />}
+            />
+            <Route
+              path="/tools"
+              element={<CalculatorsIndexPage currency={currency} />}
+            />
+            <Route
+              path="/tools/:slugOrId"
+              element={<CalculatorPage currency={currency} />}
+            />
+            <Route
+              path="/calculators/:slugOrId"
+              element={<CalculatorPage currency={currency} />}
+            />
+            <Route
+              path="/calculator/:slugOrId"
+              element={<CalculatorPage currency={currency} />}
+            />
+            <Route
+              path="/guides/:slugOrId"
+              element={<GuidePage />}
+            />
+            <Route
+              path="/articles/:slugOrId"
+              element={<GuidePage />}
+            />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/privacy" element={<LegalPage />} />
+            <Route path="/terms" element={<LegalPage />} />
+            <Route path="/disclaimer" element={<LegalPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </ErrorBoundary>
       </main>
 
       {/* Footer */}
       <Footer
         onOpenCalculator={handleOpenToolById}
         onOpenLegal={setLegalModalTab}
-        onOpenContact={() => setIsContactOpen(true)}
+        onOpenContact={() => navigate('/contact')}
         onOpenSuggest={() => setIsSuggestOpen(true)}
       />
+
+      {/* Privacy Consent Banner */}
+      <ConsentBanner />
 
       {/* Floating Action Button */}
       <FloatingActionButton onClick={() => setIsSuggestOpen(true)} />
@@ -210,7 +196,7 @@ export default function App() {
         onClose={() => setActiveTool(null)}
       />
 
-      {/* Article Modal (Full Rich Guides, Math Breakdowns & Tables) */}
+      {/* Article Modal */}
       <ArticleModal
         article={activeArticle}
         onClose={() => setActiveArticle(null)}

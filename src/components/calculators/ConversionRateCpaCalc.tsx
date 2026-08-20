@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CurrencySymbol } from '../../types';
-import { Copy, Check, RefreshCw, Target } from 'lucide-react';
+import { Copy, Check, RefreshCw, Target, AlertCircle } from 'lucide-react';
 
 interface Props {
   currency: CurrencySymbol;
@@ -13,16 +13,23 @@ export const ConversionRateCpaCalc: React.FC<Props> = ({ currency }) => {
   const [aov, setAov] = useState<number>(45);
   const [copied, setCopied] = useState(false);
 
+  const safeVisitors = Math.max(0, visitors || 0);
+  const safeConversions = Math.max(0, conversions || 0);
+  const safeAdSpend = Math.max(0, adSpend || 0);
+  const safeAov = Math.max(0, aov || 0);
+
+  const isConversionExceeded = safeVisitors > 0 && safeConversions > safeVisitors;
+
   // Formulas
-  const crPercent = visitors > 0 ? (conversions / visitors) * 100 : 0;
-  const cpa = conversions > 0 ? adSpend / conversions : 0;
-  const cpc = visitors > 0 ? adSpend / visitors : 0;
-  const grossRevenue = conversions * aov;
-  const roas = adSpend > 0 ? grossRevenue / adSpend : 0;
+  const crPercent = safeVisitors > 0 ? (safeConversions / safeVisitors) * 100 : 0;
+  const cpa = safeConversions > 0 ? safeAdSpend / safeConversions : 0;
+  const cpc = safeVisitors > 0 ? safeAdSpend / safeVisitors : 0;
+  const grossRevenue = safeConversions * safeAov;
+  const roas = safeAdSpend > 0 ? grossRevenue / safeAdSpend : 0;
   const visitorsPer100Conversions = crPercent > 0 ? Math.round(100 / (crPercent / 100)) : 0;
 
   const handleCopy = () => {
-    const text = `Conversion Rate & CPA Analysis:\n- Visitors / Clicks: ${visitors.toLocaleString()}\n- Total Conversions: ${conversions.toLocaleString()}\n- Conversion Rate (CR): ${crPercent.toFixed(2)}%\n- Ad Spend: ${currency}${adSpend.toLocaleString()}\n- Cost Per Acquisition (CPA): ${currency}${cpa.toFixed(2)}\n- Cost Per Click (CPC): ${currency}${cpc.toFixed(2)}\n- Est. Revenue (AOV ${currency}${aov}): ${currency}${grossRevenue.toLocaleString()} (${roas.toFixed(2)}x ROAS)\n- Traffic needed per 100 sales: ${visitorsPer100Conversions.toLocaleString()} visitors`;
+    const text = `Conversion Rate & CPA Analysis:\n- Visitors / Clicks: ${safeVisitors.toLocaleString()}\n- Total Conversions: ${safeConversions.toLocaleString()}\n- Conversion Rate (CR): ${crPercent.toFixed(2)}%\n- Ad Spend: ${currency}${safeAdSpend.toLocaleString()}\n- Cost Per Acquisition (CPA): ${currency}${cpa.toFixed(2)}\n- Cost Per Click (CPC): ${currency}${cpc.toFixed(2)}\n- Est. Revenue (AOV ${currency}${safeAov}): ${currency}${grossRevenue.toLocaleString()} (${roas.toFixed(2)}x ROAS)\n- Traffic needed per 100 sales: ${visitorsPer100Conversions.toLocaleString()} visitors`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -39,40 +46,41 @@ export const ConversionRateCpaCalc: React.FC<Props> = ({ currency }) => {
     <div className="space-y-5 text-slate-800">
       {/* Preset Quick Chips */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
-        <span className="text-[11px] font-bold text-slate-400 shrink-0">Presets:</span>
+        <span className="text-[11px] font-bold text-slate-400 shrink-0">Industry Benchmarks:</span>
         <button
           type="button"
           onClick={() => setPreset(5000, 125, 500, 60)}
-          className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] whitespace-nowrap transition"
+          className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] whitespace-nowrap transition cursor-pointer"
         >
           E-Com Store (2.5% CR)
         </button>
         <button
           type="button"
           onClick={() => setPreset(2000, 100, 800, 150)}
-          className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] whitespace-nowrap transition"
+          className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] whitespace-nowrap transition cursor-pointer"
         >
           B2B Lead Gen (5.0% CR)
         </button>
         <button
           type="button"
           onClick={() => setPreset(1000, 100, 300, 25)}
-          className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] whitespace-nowrap transition"
+          className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] whitespace-nowrap transition cursor-pointer"
         >
-          Landing Page (10% CR)
+          High-Intent Landing (10% CR)
         </button>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="text-xs font-bold text-slate-700 block mb-1">
-            Total Visitors / Clicks
+            Total Unique Visitors / Clicks
           </label>
           <input
             type="number"
             min="1"
-            value={visitors || ''}
+            value={visitors === 0 ? '' : visitors}
             onChange={(e) => setVisitors(parseFloat(e.target.value) || 0)}
+            placeholder="0"
             className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:ring-2 focus:ring-rose-500 text-sm"
           />
         </div>
@@ -84,8 +92,9 @@ export const ConversionRateCpaCalc: React.FC<Props> = ({ currency }) => {
           <input
             type="number"
             min="0"
-            value={conversions || ''}
+            value={conversions === 0 ? '' : conversions}
             onChange={(e) => setConversions(parseFloat(e.target.value) || 0)}
+            placeholder="0"
             className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:ring-2 focus:ring-rose-500 text-sm"
           />
         </div>
@@ -94,7 +103,7 @@ export const ConversionRateCpaCalc: React.FC<Props> = ({ currency }) => {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="text-xs font-bold text-slate-700 block mb-1">
-            Total Ad Spend ({currency})
+            Total Ad Campaign Spend ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
@@ -102,8 +111,9 @@ export const ConversionRateCpaCalc: React.FC<Props> = ({ currency }) => {
               type="number"
               min="0"
               step="any"
-              value={adSpend || ''}
+              value={adSpend === 0 ? '' : adSpend}
               onChange={(e) => setAdSpend(parseFloat(e.target.value) || 0)}
+              placeholder="0.00"
               className="w-full pl-7 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:ring-2 focus:ring-rose-500 text-sm"
             />
           </div>
@@ -111,7 +121,7 @@ export const ConversionRateCpaCalc: React.FC<Props> = ({ currency }) => {
 
         <div>
           <label className="text-xs font-bold text-slate-700 block mb-1">
-            Average Order Value (AOV)
+            Average Order Value (AOV) ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
@@ -119,13 +129,21 @@ export const ConversionRateCpaCalc: React.FC<Props> = ({ currency }) => {
               type="number"
               min="0"
               step="any"
-              value={aov || ''}
+              value={aov === 0 ? '' : aov}
               onChange={(e) => setAov(parseFloat(e.target.value) || 0)}
+              placeholder="0.00"
               className="w-full pl-7 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:ring-2 focus:ring-rose-500 text-sm"
             />
           </div>
         </div>
       </div>
+
+      {isConversionExceeded && (
+        <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-amber-600" />
+          <span>Note: Recorded conversions ({safeConversions}) exceed total visitors ({safeVisitors}). Verify that conversions are unique per visitor.</span>
+        </div>
+      )}
 
       {/* Main Scorecard */}
       <div className="p-4 bg-slate-900 text-white rounded-2xl shadow-inner space-y-3">
@@ -134,7 +152,7 @@ export const ConversionRateCpaCalc: React.FC<Props> = ({ currency }) => {
             <div className="text-xs font-bold text-slate-300 flex items-center gap-1">
               <Target className="w-3.5 h-3.5 text-rose-400" /> Conversion Rate (CR):
             </div>
-            <div className="text-[11px] text-slate-400">Orders per 100 website visitors</div>
+            <div className="text-[11px] text-slate-400">Orders per 100 unique store visitors</div>
           </div>
           <span className="font-black text-rose-400 text-2xl tracking-tight">
             {crPercent.toFixed(2)}%
@@ -177,7 +195,7 @@ export const ConversionRateCpaCalc: React.FC<Props> = ({ currency }) => {
         <button
           type="button"
           onClick={handleCopy}
-          className="text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition"
+          className="text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition cursor-pointer"
         >
           {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
           {copied ? 'Copied!' : 'Copy Summary'}

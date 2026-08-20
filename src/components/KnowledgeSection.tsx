@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ARTICLES_DATA } from '../data/articles';
 import { ArticleItem, LanguageCode } from '../types';
 import { TRANSLATIONS } from '../data/translations';
@@ -10,7 +11,7 @@ interface Props {
 }
 
 export const KnowledgeSection: React.FC<Props> = ({ onSelectArticle, language }) => {
-  const t = TRANSLATIONS[language];
+  const t = TRANSLATIONS[language] || TRANSLATIONS.US;
 
   return (
     <section id="blog-section" className="mb-14 pt-10 border-t border-slate-200">
@@ -31,8 +32,7 @@ export const KnowledgeSection: React.FC<Props> = ({ onSelectArticle, language })
         {ARTICLES_DATA.map((article) => (
           <div
             key={article.id}
-            onClick={() => onSelectArticle(article)}
-            className="cursor-pointer bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs hover:shadow-md hover:border-slate-300 transition-all group flex flex-col justify-between"
+            className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs hover:shadow-md hover:border-slate-300 transition-all group flex flex-col justify-between"
           >
             <div>
               <div className="flex items-center justify-between mb-3">
@@ -46,7 +46,9 @@ export const KnowledgeSection: React.FC<Props> = ({ onSelectArticle, language })
               </div>
 
               <h3 className="font-extrabold text-[15px] text-slate-900 group-hover:text-emerald-700 transition leading-snug mb-2">
-                {article.title}
+                <Link to={`/guides/${article.slug || article.id}`}>
+                  {article.title}
+                </Link>
               </h3>
 
               <p className="text-xs text-slate-500 leading-relaxed line-clamp-3">
@@ -54,10 +56,22 @@ export const KnowledgeSection: React.FC<Props> = ({ onSelectArticle, language })
               </p>
             </div>
 
-            <span className="text-xs font-bold text-emerald-600 group-hover:text-emerald-700 mt-5 flex items-center gap-1 transition">
-              <span>{t.readGuide}</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
-            </span>
+            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => onSelectArticle(article)}
+                className="text-xs font-bold text-slate-600 hover:text-slate-900 transition"
+              >
+                Quick Preview
+              </button>
+              <Link
+                to={`/guides/${article.slug || article.id}`}
+                className="text-xs font-bold text-emerald-600 group-hover:text-emerald-700 flex items-center gap-1 transition"
+              >
+                <span>{t.readGuide}</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
+              </Link>
+            </div>
           </div>
         ))}
       </div>

@@ -26,17 +26,40 @@ export interface LanguageOption {
   flag: string;
 }
 
+export interface ToolFaq {
+  q: string;
+  a: string;
+}
+
+export interface ToolGuide {
+  whatIsIt: string;
+  howItWorks?: string;
+  formulaExplanation: string;
+  formulaMath: string;
+  stepByStepExample: string;
+  whenToUse?: string[];
+  commonMistakes?: string[];
+  practicalTips: string[];
+  faqs: ToolFaq[];
+}
+
 export interface ToolItem {
   id: string;
+  slug: string;
   name: string;
+  fullTitle: string;
   category: CategoryType;
   description: string;
+  metaDescription: string;
+  keywords: string[];
   tags: string[];
   iconName: string;
   iconBgColor: string;
   iconColor: string;
   tagColor: string;
   featured?: boolean;
+  detailedGuide: ToolGuide;
+  relatedToolIds: string[];
 }
 
 export interface ArticleTable {
@@ -54,6 +77,7 @@ export interface ArticleSection {
 
 export interface ArticleItem {
   id: string;
+  slug?: string;
   title: string;
   category: string;
   readTime: string;

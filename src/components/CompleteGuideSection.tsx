@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { CreditCard, TrendingUp, Scale, Briefcase } from 'lucide-react';
 
 interface Props {
@@ -33,15 +34,23 @@ export const CompleteGuideSection: React.FC<Props> = ({ onOpenCalculator }) => {
               When you sell online, the price a customer pays is not what lands in your account. Stripe and PayPal both charge a percentage plus a small fixed fee per transaction. Use the Payment Fees calculator to see the exact fee and net payout for any sale, or flip it around with the Reverse Invoice Target to find out what price to charge so you receive a specific amount after fees.
             </p>
           </div>
-          {onOpenCalculator && (
-            <button
-              type="button"
-              onClick={() => onOpenCalculator('calc-fees')}
-              className="mt-4 text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 self-start"
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            {onOpenCalculator && (
+              <button
+                type="button"
+                onClick={() => onOpenCalculator('calc-fees')}
+                className="text-xs font-bold text-slate-600 hover:text-slate-900 transition"
+              >
+                Quick Calculator
+              </button>
+            )}
+            <Link
+              to="/tools/payment-gateway-fees"
+              className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1"
             >
-              Open Payment Fees Calculator →
-            </button>
-          )}
+              Open Full Guide & Math →
+            </Link>
+          </div>
         </div>
 
         {/* Topic 2 */}
@@ -59,15 +68,23 @@ export const CompleteGuideSection: React.FC<Props> = ({ onOpenCalculator }) => {
               These two numbers are easy to confuse but mean very different things. Margin is profit as a percentage of your selling price. Markup is profit as a percentage of your cost. A 50% markup on a $10 product is not the same as a 50% margin — use the Profit Margin & Markup tool to compare both instantly and avoid underpricing your products.
             </p>
           </div>
-          {onOpenCalculator && (
-            <button
-              type="button"
-              onClick={() => onOpenCalculator('calc-margin')}
-              className="mt-4 text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1 self-start"
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            {onOpenCalculator && (
+              <button
+                type="button"
+                onClick={() => onOpenCalculator('calc-margin')}
+                className="text-xs font-bold text-slate-600 hover:text-slate-900 transition"
+              >
+                Quick Calculator
+              </button>
+            )}
+            <Link
+              to="/tools/profit-margin"
+              className="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1"
             >
-              Open Profit Margin Tool →
-            </button>
-          )}
+              Open Full Guide & Math →
+            </Link>
+          </div>
         </div>
 
         {/* Topic 3 */}
@@ -85,15 +102,23 @@ export const CompleteGuideSection: React.FC<Props> = ({ onOpenCalculator }) => {
               Before a product or service becomes profitable, it must first cover your fixed costs (rent, salaries, subscriptions) and variable costs (materials, per-unit fees). The Break-Even calculator tells you exactly how many units you need to sell — and the revenue that represents — before every additional sale becomes pure profit.
             </p>
           </div>
-          {onOpenCalculator && (
-            <button
-              type="button"
-              onClick={() => onOpenCalculator('calc-breakeven')}
-              className="mt-4 text-xs font-bold text-amber-600 hover:text-amber-700 hover:underline flex items-center gap-1 self-start"
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            {onOpenCalculator && (
+              <button
+                type="button"
+                onClick={() => onOpenCalculator('calc-breakeven')}
+                className="text-xs font-bold text-slate-600 hover:text-slate-900 transition"
+              >
+                Quick Calculator
+              </button>
+            )}
+            <Link
+              to="/tools/break-even"
+              className="text-xs font-bold text-amber-600 hover:text-amber-700 hover:underline flex items-center gap-1"
             >
-              Open Break-Even Tool →
-            </button>
-          )}
+              Open Full Guide & Math →
+            </Link>
+          </div>
         </div>
 
         {/* Topic 4 */}
@@ -111,15 +136,23 @@ export const CompleteGuideSection: React.FC<Props> = ({ onOpenCalculator }) => {
               Many freelancers price hours without accounting for taxes, non-billable admin work, or time off. The Freelance Rate calculator works backward from your target annual income and realistic billable hours to recommend an hourly and daily rate that actually sustains your business.
             </p>
           </div>
-          {onOpenCalculator && (
-            <button
-              type="button"
-              onClick={() => onOpenCalculator('calc-freelance')}
-              className="mt-4 text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:underline flex items-center gap-1 self-start"
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            {onOpenCalculator && (
+              <button
+                type="button"
+                onClick={() => onOpenCalculator('calc-freelance')}
+                className="text-xs font-bold text-slate-600 hover:text-slate-900 transition"
+              >
+                Quick Calculator
+              </button>
+            )}
+            <Link
+              to="/tools/freelance-rate"
+              className="text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:underline flex items-center gap-1"
             >
-              Open Freelance Rate Tool →
-            </button>
-          )}
+              Open Full Guide & Math →
+            </Link>
+          </div>
         </div>
       </div>
     </section>

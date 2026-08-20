@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { ToolItem, CurrencySymbol } from '../../types';
-import { X } from 'lucide-react';
+import { X, ExternalLink } from 'lucide-react';
 import { PaymentFeesCalc } from '../calculators/PaymentFeesCalc';
 import { ProfitMarginCalc } from '../calculators/ProfitMarginCalc';
 import { BreakEvenCalc } from '../calculators/BreakEvenCalc';
@@ -13,6 +14,7 @@ import { CompoundInterestCalc } from '../calculators/CompoundInterestCalc';
 import { LoanEmiCalc } from '../calculators/LoanEmiCalc';
 import { CustomerLtvCalc } from '../calculators/CustomerLtvCalc';
 import { SalaryTaxCalc } from '../calculators/SalaryTaxCalc';
+import { CalculatorDisclaimer, DisclaimerDomain } from '../CalculatorDisclaimer';
 
 interface Props {
   tool: ToolItem | null;
@@ -36,6 +38,24 @@ export const CalculatorModal: React.FC<Props> = ({ tool, currency, onClose }) =>
   }, [tool, onClose]);
 
   if (!tool) return null;
+
+  const getDisclaimerDomain = (toolId: string): DisclaimerDomain => {
+    switch (toolId) {
+      case 'calc-fees': return 'payment-fees';
+      case 'calc-margin': return 'margin';
+      case 'calc-breakeven': return 'breakeven';
+      case 'calc-roas': return 'roas';
+      case 'calc-cr-cpa': return 'cr-cpa';
+      case 'calc-landed-cost': return 'landed-cost';
+      case 'calc-freelance': return 'freelance';
+      case 'calc-late-interest': return 'late-interest';
+      case 'calc-compound': return 'compound';
+      case 'calc-loan-emi': return 'loan-emi';
+      case 'calc-ltv': return 'ltv';
+      case 'calc-salary': return 'salary';
+      default: return 'general';
+    }
+  };
 
   const renderCalculator = () => {
     switch (tool.id) {
@@ -81,7 +101,7 @@ export const CalculatorModal: React.FC<Props> = ({ tool, currency, onClose }) =>
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition"
+          className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition cursor-pointer"
           aria-label="Close modal"
         >
           <X className="w-4 h-4" />
@@ -107,6 +127,22 @@ export const CalculatorModal: React.FC<Props> = ({ tool, currency, onClose }) =>
 
         {/* Calculator Body */}
         {renderCalculator()}
+
+        {/* Modal Footer with Guide Link & Disclaimer */}
+        <div className="mt-5 pt-4 border-t border-slate-100 space-y-3">
+          <Link
+            to={`/tools/${tool.slug}`}
+            onClick={onClose}
+            className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold transition group"
+          >
+            <span className="flex items-center gap-1.5">
+              <span>View Full Educational Guide & Formula Proofs</span>
+            </span>
+            <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-800 transition" />
+          </Link>
+
+          <CalculatorDisclaimer domain={getDisclaimerDomain(tool.id)} />
+        </div>
       </div>
     </div>
   );

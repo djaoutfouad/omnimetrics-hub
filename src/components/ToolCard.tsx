@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ToolItem } from '../types';
 import {
   CreditCard,
@@ -14,6 +15,7 @@ import {
   CalendarClock,
   Landmark,
   ArrowUpRight,
+  ExternalLink,
 } from 'lucide-react';
 
 interface Props {
@@ -56,11 +58,21 @@ export const ToolCard: React.FC<Props> = ({ tool, onLaunch }) => {
   return (
     <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-slate-300 transition-all flex flex-col justify-between group">
       <div>
-        {/* Icon */}
-        <div
-          className={`w-12 h-12 rounded-2xl ${tool.iconBgColor} flex items-center justify-center ${tool.iconColor} mb-4 shadow-xs`}
-        >
-          {getIcon()}
+        {/* Icon & Category */}
+        <div className="flex items-center justify-between mb-4">
+          <div
+            className={`w-12 h-12 rounded-2xl ${tool.iconBgColor} flex items-center justify-center ${tool.iconColor} shadow-xs`}
+          >
+            {getIcon()}
+          </div>
+          <Link
+            to={`/tools/${tool.slug}`}
+            className="text-slate-400 hover:text-slate-700 transition p-1"
+            title={`Open dedicated page for ${tool.name}`}
+            aria-label={`Open dedicated page for ${tool.name}`}
+          >
+            <ExternalLink className="w-4 h-4" />
+          </Link>
         </div>
 
         {/* Category Header */}
@@ -70,7 +82,9 @@ export const ToolCard: React.FC<Props> = ({ tool, onLaunch }) => {
 
         {/* Title */}
         <h3 className="font-extrabold text-lg text-slate-900 mb-2 group-hover:text-slate-800 transition">
-          {tool.name}
+          <Link to={`/tools/${tool.slug}`} className="hover:text-emerald-700 transition">
+            {tool.name}
+          </Link>
         </h3>
 
         {/* Description */}
@@ -91,15 +105,24 @@ export const ToolCard: React.FC<Props> = ({ tool, onLaunch }) => {
         </div>
       </div>
 
-      {/* Launch Action */}
-      <button
-        type="button"
-        onClick={() => onLaunch(tool)}
-        className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-[0.99] shadow-xs"
-      >
-        <span>Launch Tool</span>
-        <ArrowUpRight className="w-3.5 h-3.5" />
-      </button>
+      {/* Action Footer: Quick Launch Modal or Dedicated URL */}
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => onLaunch(tool)}
+          className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-[0.99] shadow-xs"
+        >
+          <span>Launch Tool</span>
+          <ArrowUpRight className="w-3.5 h-3.5" />
+        </button>
+        <Link
+          to={`/tools/${tool.slug}`}
+          className="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center justify-center transition"
+          title="Open Full Page & Formula Guide"
+        >
+          <span>Guide</span>
+        </Link>
+      </div>
     </div>
   );
 };

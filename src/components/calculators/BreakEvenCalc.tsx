@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CurrencySymbol } from '../../types';
-import { Copy, Check, RefreshCw } from 'lucide-react';
+import { Copy, Check, RefreshCw, AlertTriangle } from 'lucide-react';
 
 interface Props {
   currency: CurrencySymbol;
@@ -12,14 +12,19 @@ export const BreakEvenCalc: React.FC<Props> = ({ currency }) => {
   const [variableCost, setVariableCost] = useState<number>(20);
   const [copied, setCopied] = useState(false);
 
-  const contributionMargin = unitPrice - variableCost;
-  const contributionRatio = unitPrice > 0 ? (contributionMargin / unitPrice) * 100 : 0;
-  const breakEvenUnits = contributionMargin > 0 ? Math.ceil(fixedCosts / contributionMargin) : 0;
-  const breakEvenRevenue = breakEvenUnits * unitPrice;
+  const safeFixedCosts = Math.max(0, fixedCosts || 0);
+  const safeUnitPrice = Math.max(0, unitPrice || 0);
+  const safeVariableCost = Math.max(0, variableCost || 0);
+
+  const contributionMargin = safeUnitPrice - safeVariableCost;
+  const isViable = contributionMargin > 0;
+  const contributionRatio = safeUnitPrice > 0 ? (contributionMargin / safeUnitPrice) * 100 : 0;
+  const breakEvenUnits = isViable ? Math.ceil(safeFixedCosts / contributionMargin) : 0;
+  const breakEvenRevenue = breakEvenUnits * safeUnitPrice;
   const safetyBufferUnits = Math.ceil(breakEvenUnits * 1.25); // 25% safety margin
 
   const handleCopy = () => {
-    const text = `Break-Even Analysis:\n- Fixed Costs: ${currency}${fixedCosts.toLocaleString()}\n- Unit Selling Price: ${currency}${unitPrice.toFixed(2)}\n- Variable Cost / Unit: ${currency}${variableCost.toFixed(2)}\n- Unit Contribution Margin: ${currency}${contributionMargin.toFixed(2)} (${contributionRatio.toFixed(1)}%)\n- Break-Even Units Target: ${breakEvenUnits.toLocaleString()} units\n- Break-Even Revenue Target: ${currency}${breakEvenRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    const text = `Break-Even Analysis:\n- Fixed Costs: ${currency}${safeFixedCosts.toLocaleString()}\n- Unit Selling Price: ${currency}${safeUnitPrice.toFixed(2)}\n- Variable Cost / Unit: ${currency}${safeVariableCost.toFixed(2)}\n- Unit Contribution Margin: ${currency}${contributionMargin.toFixed(2)} (${contributionRatio.toFixed(1)}%)\n- Break-Even Units Target: ${breakEvenUnits.toLocaleString()} units\n- Break-Even Revenue Target: ${currency}${breakEvenRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -37,12 +42,13 @@ export const BreakEvenCalc: React.FC<Props> = ({ currency }) => {
             type="number"
             min="0"
             step="any"
-            value={fixedCosts || ''}
+            value={fixedCosts === 0 ? '' : fixedCosts}
             onChange={(e) => setFixedCosts(parseFloat(e.target.value) || 0)}
+            placeholder="0.00"
             className="w-full pl-8 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:ring-2 focus:ring-amber-500 text-sm"
           />
         </div>
-        <span className="text-[10px] text-slate-400 mt-1 block">Rent, software, monthly salaries, insurance, hosting</span>
+        <span className="text-[10px] text-slate-400 mt-1 block">Rent, software subscriptions, base salaries, insurance, hosting</span>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -56,8 +62,9 @@ export const BreakEvenCalc: React.FC<Props> = ({ currency }) => {
               type="number"
               min="0"
               step="any"
-              value={unitPrice || ''}
+              value={unitPrice === 0 ? '' : unitPrice}
               onChange={(e) => setUnitPrice(parseFloat(e.target.value) || 0)}
+              placeholder="0.00"
               className="w-full pl-7 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:ring-2 focus:ring-amber-500 text-sm"
             />
           </div>
@@ -73,8 +80,9 @@ export const BreakEvenCalc: React.FC<Props> = ({ currency }) => {
               type="number"
               min="0"
               step="any"
-              value={variableCost || ''}
+              value={variableCost === 0 ? '' : variableCost}
               onChange={(e) => setVariableCost(parseFloat(e.target.value) || 0)}
+              placeholder="0.00"
               className="w-full pl-7 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:ring-2 focus:ring-amber-500 text-sm"
             />
           </div>
@@ -85,38 +93,51 @@ export const BreakEvenCalc: React.FC<Props> = ({ currency }) => {
       <div className="p-4 bg-slate-900 text-white rounded-2xl shadow-inner space-y-3">
         <div className="flex justify-between items-baseline text-xs text-slate-400">
           <span>Unit Contribution Margin:</span>
-          <span className="font-bold text-amber-400">
+          <span className={`font-bold ${isViable ? 'text-amber-400' : 'text-rose-400'}`}>
             {currency}{contributionMargin.toFixed(2)} ({contributionRatio.toFixed(1)}%)
           </span>
         </div>
 
-        <div className="flex justify-between items-baseline border-t border-slate-800 pt-2.5">
-          <div>
-            <div className="text-xs font-bold text-slate-300">Break-Even Units:</div>
-            <div className="text-[11px] text-slate-400">Minimum sales to cover costs</div>
-          </div>
-          <span className="font-extrabold text-amber-400 text-2xl tracking-tight">
-            {breakEvenUnits.toLocaleString()} <span className="text-sm font-semibold text-slate-400">units</span>
-          </span>
-        </div>
+        {isViable ? (
+          <>
+            <div className="flex justify-between items-baseline border-t border-slate-800 pt-2.5">
+              <div>
+                <div className="text-xs font-bold text-slate-300">Break-Even Units:</div>
+                <div className="text-[11px] text-slate-400">Minimum sales volume to cover total costs</div>
+              </div>
+              <span className="font-extrabold text-amber-400 text-2xl tracking-tight">
+                {breakEvenUnits.toLocaleString()} <span className="text-sm font-semibold text-slate-400">units</span>
+              </span>
+            </div>
 
-        <div className="flex justify-between items-baseline border-t border-slate-800 pt-2.5">
-          <span className="text-xs font-bold text-slate-300">Break-Even Revenue:</span>
-          <span className="font-extrabold text-emerald-400 text-lg">
-            {currency}{breakEvenRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </span>
-        </div>
+            <div className="flex justify-between items-baseline border-t border-slate-800 pt-2.5">
+              <span className="text-xs font-bold text-slate-300">Break-Even Sales Revenue:</span>
+              <span className="font-extrabold text-emerald-400 text-lg">
+                {currency}{breakEvenRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+            </div>
+          </>
+        ) : (
+          <div className="border-t border-slate-800 pt-2.5 flex items-start gap-2 text-rose-400 text-xs">
+            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+            <span>
+              Unit selling price ({currency}{safeUnitPrice.toFixed(2)}) must exceed variable costs ({currency}{safeVariableCost.toFixed(2)}) to achieve break-even. Each sale currently generates a loss of {currency}{Math.abs(contributionMargin).toFixed(2)}.
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Recommended Safety Buffer */}
-      <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between text-xs">
-        <span className="text-amber-900 font-medium">
-          Target with 25% safety cushion:
-        </span>
-        <span className="font-bold text-amber-800">
-          {safetyBufferUnits.toLocaleString()} units ({currency}{(safetyBufferUnits * unitPrice).toLocaleString()})
-        </span>
-      </div>
+      {isViable && (
+        <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between text-xs">
+          <span className="text-amber-900 font-medium">
+            Target with 25% safety cushion:
+          </span>
+          <span className="font-bold text-amber-800">
+            {safetyBufferUnits.toLocaleString()} units ({currency}{(safetyBufferUnits * safeUnitPrice).toLocaleString()})
+          </span>
+        </div>
+      )}
 
       {/* Action Footer */}
       <div className="flex items-center justify-between pt-1">
@@ -135,7 +156,7 @@ export const BreakEvenCalc: React.FC<Props> = ({ currency }) => {
         <button
           type="button"
           onClick={handleCopy}
-          className="text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition"
+          className="text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition cursor-pointer"
         >
           {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
           {copied ? 'Copied!' : 'Copy Summary'}

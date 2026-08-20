@@ -13,13 +13,18 @@ export const CustomerLtvCalc: React.FC<Props> = ({ currency }) => {
   const [grossMarginPct, setGrossMarginPct] = useState<number>(60);
   const [copied, setCopied] = useState(false);
 
-  const annualCustomerRevenue = aov * purchaseFrequency;
-  const grossLtv = annualCustomerRevenue * lifespanYears;
-  const profitLtv = grossLtv * (grossMarginPct / 100);
+  const safeAov = Math.max(0, aov || 0);
+  const safeFrequency = Math.max(0, purchaseFrequency || 0);
+  const safeLifespan = Math.max(0, lifespanYears || 0);
+  const safeMargin = Math.max(0, Math.min(100, grossMarginPct || 0));
+
+  const annualCustomerRevenue = safeAov * safeFrequency;
+  const grossLtv = annualCustomerRevenue * safeLifespan;
+  const profitLtv = grossLtv * (safeMargin / 100);
   const recommendedMaxCac = profitLtv / 3; // Standard SaaS/eCom 3:1 LTV:CAC target
 
   const handleCopy = () => {
-    const text = `Customer Lifetime Value (LTV) Summary:\n- Average Order Value (AOV): ${currency}${aov.toFixed(2)}\n- Purchase Frequency: ${purchaseFrequency} orders/yr\n- Customer Lifespan: ${lifespanYears} years\n- Gross Margin: ${grossMarginPct}%\n- Annual Value / Customer: ${currency}${annualCustomerRevenue.toFixed(2)}/yr\n- Gross Lifetime Revenue: ${currency}${grossLtv.toFixed(2)}\n- Net Lifetime Profit: ${currency}${profitLtv.toFixed(2)}\n- Recommended Max CAC (3:1 ratio): ${currency}${recommendedMaxCac.toFixed(2)}`;
+    const text = `Customer Lifetime Value (LTV) Summary:\n- Average Order Value (AOV): ${currency}${safeAov.toFixed(2)}\n- Purchase Frequency: ${safeFrequency} orders/yr\n- Customer Lifespan: ${safeLifespan} years\n- Gross Margin: ${safeMargin}%\n- Annual Value / Customer: ${currency}${annualCustomerRevenue.toFixed(2)}/yr\n- Gross Lifetime Revenue: ${currency}${grossLtv.toFixed(2)}\n- Net Lifetime Profit: ${currency}${profitLtv.toFixed(2)}\n- Recommended Max CAC (3:1 ratio): ${currency}${recommendedMaxCac.toFixed(2)}`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -37,8 +42,9 @@ export const CustomerLtvCalc: React.FC<Props> = ({ currency }) => {
             type="number"
             min="0"
             step="any"
-            value={aov || ''}
+            value={aov === 0 ? '' : aov}
             onChange={(e) => setAov(parseFloat(e.target.value) || 0)}
+            placeholder="0.00"
             className="w-full pl-8 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:ring-2 focus:ring-purple-500 text-sm"
           />
         </div>
@@ -53,8 +59,9 @@ export const CustomerLtvCalc: React.FC<Props> = ({ currency }) => {
             type="number"
             min="0.1"
             step="0.5"
-            value={purchaseFrequency || ''}
+            value={purchaseFrequency === 0 ? '' : purchaseFrequency}
             onChange={(e) => setPurchaseFrequency(parseFloat(e.target.value) || 0)}
+            placeholder="4"
             className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:ring-2 focus:ring-purple-500 text-sm"
           />
         </div>
@@ -67,8 +74,9 @@ export const CustomerLtvCalc: React.FC<Props> = ({ currency }) => {
             type="number"
             min="0.1"
             step="0.5"
-            value={lifespanYears || ''}
+            value={lifespanYears === 0 ? '' : lifespanYears}
             onChange={(e) => setLifespanYears(parseFloat(e.target.value) || 0)}
+            placeholder="3"
             className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:ring-2 focus:ring-purple-500 text-sm"
           />
         </div>
@@ -77,7 +85,7 @@ export const CustomerLtvCalc: React.FC<Props> = ({ currency }) => {
       <div>
         <div className="flex justify-between items-center mb-1">
           <label className="text-xs font-bold text-slate-700">Gross Margin Percentage (%)</label>
-          <span className="text-xs font-bold text-purple-700">{grossMarginPct}%</span>
+          <span className="text-xs font-bold text-purple-700">{safeMargin}%</span>
         </div>
         <input
           type="range"
@@ -110,7 +118,7 @@ export const CustomerLtvCalc: React.FC<Props> = ({ currency }) => {
 
         <div className="grid grid-cols-2 gap-2 border-t border-slate-800 pt-2.5 text-xs">
           <div>
-            <span className="text-slate-400 block text-[11px]">Net Profit LTV ({grossMarginPct}%):</span>
+            <span className="text-slate-400 block text-[11px]">Net Profit LTV ({safeMargin}%):</span>
             <span className="font-bold text-emerald-400 text-sm">
               {currency}{profitLtv.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </span>
@@ -142,7 +150,7 @@ export const CustomerLtvCalc: React.FC<Props> = ({ currency }) => {
         <button
           type="button"
           onClick={handleCopy}
-          className="text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition"
+          className="text-xs font-bold px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition cursor-pointer"
         >
           {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
           {copied ? 'Copied!' : 'Copy Summary'}
