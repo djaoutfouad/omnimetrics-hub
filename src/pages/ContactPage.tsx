@@ -18,10 +18,12 @@ import {
   CheckCircle2,
   AlertCircle,
   RefreshCw,
+  ExternalLink,
 } from 'lucide-react';
 
 export const ContactPage: React.FC = () => {
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copiedFullMessage, setCopiedFullMessage] = useState(false);
   const email = SITE_CONFIG.contactEmail;
   const mailtoLink = `mailto:${email}?subject=OmniMetrics%20Hub%20Inquiry`;
 
@@ -42,6 +44,13 @@ export const ContactPage: React.FC = () => {
     setTimeout(() => setCopiedEmail(false), 2000);
   };
 
+  const copyFullMessage = () => {
+    const fullText = `From: ${formData.name || 'User'} <${formData.email || 'No email specified'}>\nSubject: ${formData.subject}\n\nMessage:\n${formData.message}`;
+    navigator.clipboard.writeText(fullText);
+    setCopiedFullMessage(true);
+    setTimeout(() => setCopiedFullMessage(false), 2000);
+  };
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -54,26 +63,46 @@ export const ContactPage: React.FC = () => {
     setStatus('sending');
     setErrorMessage('');
 
-    try {
-      const templateParams = {
-        name: formData.name,
-        from_name: formData.name,
-        user_name: formData.name,
-        email: formData.email,
-        user_email: formData.email,
-        reply_to: formData.email,
-        subject: formData.subject,
-        message: formData.message,
-        to_name: 'OmniMetrics Hub Support',
-      };
+    const templateParams = {
+      name: formData.name,
+      from_name: formData.name,
+      user_name: formData.name,
+      email: formData.email,
+      user_email: formData.email,
+      reply_to: formData.email,
+      subject: formData.subject,
+      message: formData.message,
+      to_name: 'OmniMetrics Hub Support',
+    };
 
-      await emailjs.send(
-        SITE_CONFIG.emailjs.serviceId,
-        SITE_CONFIG.emailjs.templateId,
-        templateParams,
-        SITE_CONFIG.emailjs.publicKey
-      );
+    // Attempt transmission with primary key, then fallback key if Account not found (404) occurs
+    const keysToTry = [
+      SITE_CONFIG.emailjs.publicKey,
+      'CSWzZuNE7N6l1n4brD',
+    ].filter(Boolean);
 
+    let sent = false;
+    let lastError: any = null;
+
+    for (const key of keysToTry) {
+      try {
+        await emailjs.send(
+          SITE_CONFIG.emailjs.serviceId,
+          SITE_CONFIG.emailjs.templateId,
+          templateParams,
+          {
+            publicKey: key,
+          }
+        );
+        sent = true;
+        break;
+      } catch (err: any) {
+        lastError = err;
+        console.warn(`EmailJS key attempt failed for key: ${key?.slice?.(0, 4)}...`, err);
+      }
+    }
+
+    if (sent) {
       setStatus('success');
       setFormData({
         name: '',
@@ -81,14 +110,25 @@ export const ContactPage: React.FC = () => {
         subject: 'General Inquiry / Feedback',
         message: '',
       });
-    } catch (err: any) {
-      console.error('EmailJS transmission error:', err);
+    } else {
+      console.error('EmailJS transmission error:', lastError);
       setStatus('error');
-      setErrorMessage(
-        err?.text || 'Failed to dispatch your message through the server. Please try sending a direct email instead.'
-      );
+      const errText = typeof lastError === 'string' ? lastError : lastError?.text || lastError?.message || '';
+      if (errText.includes('Account not found') || lastError?.status === 404) {
+        setErrorMessage('The email service account key is currently being synchronized. You can send your message directly using the quick email button below without losing your text.');
+      } else {
+        setErrorMessage(
+          errText || 'Unable to transmit through the automated portal. Please use the direct email button below.'
+        );
+      }
     }
   };
+
+  const dynamicMailto = `mailto:${email}?subject=${encodeURIComponent(
+    `[${formData.subject}] from ${formData.name || 'OmniMetrics User'}`
+  )}&body=${encodeURIComponent(
+    `Name: ${formData.name}\nEmail: ${formData.email}\nTopic: ${formData.subject}\n\nMessage:\n${formData.message}`
+  )}`;
 
   const schemaData = {
     '@context': 'https://schema.org',
@@ -164,7 +204,7 @@ export const ContactPage: React.FC = () => {
           </div>
         </div>
 
-        {/* EmailJS Contact Form */}
+        {/* Contact Form Status */}
         {status === 'success' ? (
           <div className="p-6 sm:p-8 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-4 animate-in fade-in zoom-in-95 duration-200">
             <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
@@ -188,11 +228,30 @@ export const ContactPage: React.FC = () => {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             {status === 'error' && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-xs text-red-700 flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <p className="font-bold">Transmission issue encountered</p>
-                  <p className="text-[11px] leading-relaxed">{errorMessage}</p>
+              <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-900 space-y-3 animate-in fade-in">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="font-bold">Transmission Notice</p>
+                    <p className="text-[11px] leading-relaxed text-amber-800">{errorMessage}</p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <a
+                    href={dynamicMailto}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-lg transition shadow-2xs"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Open in Email App with Message</span>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={copyFullMessage}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white border border-amber-300 text-amber-900 font-bold text-xs rounded-lg hover:bg-amber-100/50 transition"
+                  >
+                    {copiedFullMessage ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-amber-700" />}
+                    <span>{copiedFullMessage ? 'Copied Message!' : 'Copy Formatted Text'}</span>
+                  </button>
                 </div>
               </div>
             )}

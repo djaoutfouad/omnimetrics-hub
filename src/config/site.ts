@@ -17,7 +17,7 @@ export const SITE_CONFIG = {
   emailjs: {
     serviceId: 'service_qfoy2xa',
     templateId: 'template_rza5fvr',
-    publicKey: 'bjgJFPdz_ydHfRT7g',
+    publicKey: 'EKAHPvwVCQPeT4Szb',
   },
 };
 
