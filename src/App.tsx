@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import { CurrencySymbol, CategoryType, ToolItem, ArticleItem, LanguageCode } from './types';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { CurrencySymbol, CategoryType, ToolItem, ArticleItem, LanguageCode, AppOutletContext } from './types';
 import { TOOLS_DATA } from './data/tools';
 import { Header } from './components/Header';
 import { DockNav } from './components/DockNav';
@@ -10,16 +10,6 @@ import { FloatingActionButton } from './components/FloatingActionButton';
 import { ScrollToTop } from './components/ScrollToTop';
 import { ConsentBanner } from './components/ConsentBanner';
 import { ErrorBoundary } from './components/ErrorBoundary';
-
-// Pages
-import { HomePage } from './pages/HomePage';
-import { CalculatorPage } from './pages/CalculatorPage';
-import { CalculatorsIndexPage } from './pages/CalculatorsIndexPage';
-import { GuidePage } from './pages/GuidePage';
-import { AboutPage } from './pages/AboutPage';
-import { ContactPage } from './pages/ContactPage';
-import { LegalPage } from './pages/LegalPage';
-import { NotFoundPage } from './pages/NotFoundPage';
 
 // Modals
 import { CalculatorModal } from './components/modals/CalculatorModal';
@@ -120,58 +110,22 @@ export default function App() {
       {/* Main Content Area */}
       <main className="max-w-5xl xl:max-w-[960px] 2xl:max-w-6xl mx-auto px-4 sm:px-6 pt-6 flex-1 w-full pb-16">
         <ErrorBoundary>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <HomePage
-                  currency={currency}
-                  language={language}
-                  selectedCategory={selectedCategory}
-                  onSelectCategory={setSelectedCategory}
-                  searchQuery={searchQuery}
-                  onResetSearch={handleReset}
-                  onLaunchTool={setActiveTool}
-                  onSelectArticle={setActiveArticle}
-                  onOpenToolById={handleOpenToolById}
-                />
-              }
-            />
-            <Route
-              path="/calculators"
-              element={<CalculatorsIndexPage currency={currency} />}
-            />
-            <Route
-              path="/tools"
-              element={<CalculatorsIndexPage currency={currency} />}
-            />
-            <Route
-              path="/tools/:slugOrId"
-              element={<CalculatorPage currency={currency} />}
-            />
-            <Route
-              path="/calculators/:slugOrId"
-              element={<CalculatorPage currency={currency} />}
-            />
-            <Route
-              path="/calculator/:slugOrId"
-              element={<CalculatorPage currency={currency} />}
-            />
-            <Route
-              path="/guides/:slugOrId"
-              element={<GuidePage />}
-            />
-            <Route
-              path="/articles/:slugOrId"
-              element={<GuidePage />}
-            />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/privacy" element={<LegalPage />} />
-            <Route path="/terms" element={<LegalPage />} />
-            <Route path="/disclaimer" element={<LegalPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+          <Outlet
+            context={{
+              currency,
+              setCurrency,
+              language,
+              setLanguage,
+              selectedCategory,
+              setSelectedCategory,
+              searchQuery,
+              setSearchQuery,
+              handleReset,
+              setActiveTool,
+              setActiveArticle,
+              handleOpenToolById,
+            } satisfies AppOutletContext}
+          />
         </ErrorBoundary>
       </main>
 

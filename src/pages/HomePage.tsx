@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { CurrencySymbol, CategoryType, ToolItem, ArticleItem, LanguageCode } from '../types';
+import { useOutletContext } from 'react-router-dom';
+import { CurrencySymbol, CategoryType, ToolItem, ArticleItem, LanguageCode, AppOutletContext } from '../types';
 import { TOOLS_DATA } from '../data/tools';
 import { TRANSLATIONS } from '../data/translations';
 import { Hero } from '../components/Hero';
@@ -12,27 +13,28 @@ import { AdSlot } from '../components/AdSlot';
 import { SeoHead } from '../components/SeoHead';
 
 interface Props {
-  currency: CurrencySymbol;
-  language: LanguageCode;
-  selectedCategory: CategoryType;
-  onSelectCategory: (cat: CategoryType) => void;
-  searchQuery: string;
-  onResetSearch: () => void;
-  onLaunchTool: (tool: ToolItem) => void;
-  onSelectArticle: (article: ArticleItem) => void;
-  onOpenToolById: (id: string) => void;
+  currency?: CurrencySymbol;
+  language?: LanguageCode;
+  selectedCategory?: CategoryType;
+  onSelectCategory?: (cat: CategoryType) => void;
+  searchQuery?: string;
+  onResetSearch?: () => void;
+  onLaunchTool?: (tool: ToolItem) => void;
+  onSelectArticle?: (article: ArticleItem) => void;
+  onOpenToolById?: (id: string) => void;
 }
 
-export const HomePage: React.FC<Props> = ({
-  language,
-  selectedCategory,
-  onSelectCategory,
-  searchQuery,
-  onResetSearch,
-  onLaunchTool,
-  onSelectArticle,
-  onOpenToolById,
-}) => {
+export const HomePage: React.FC<Props> = (props) => {
+  const context = useOutletContext<AppOutletContext | undefined>();
+  const language = props.language ?? context?.language ?? 'US';
+  const selectedCategory = props.selectedCategory ?? context?.selectedCategory ?? 'ALL';
+  const onSelectCategory = props.onSelectCategory ?? context?.setSelectedCategory ?? (() => {});
+  const searchQuery = props.searchQuery ?? context?.searchQuery ?? '';
+  const onResetSearch = props.onResetSearch ?? context?.handleReset ?? (() => {});
+  const onLaunchTool = props.onLaunchTool ?? context?.setActiveTool ?? (() => {});
+  const onSelectArticle = props.onSelectArticle ?? context?.setActiveArticle ?? (() => {});
+  const onOpenToolById = props.onOpenToolById ?? context?.handleOpenToolById ?? (() => {});
+
   const t = TRANSLATIONS[language] || TRANSLATIONS.US;
 
   // Filtered tools
