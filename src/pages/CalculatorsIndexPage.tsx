@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { Link, useOutletContext } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { TOOLS_DATA } from '../data/tools';
-import { CategoryType, CurrencySymbol, AppOutletContext } from '../types';
+import { CategoryType, CurrencySymbol } from '../types';
 import { SeoHead } from '../components/SeoHead';
 import { AdSlot } from '../components/AdSlot';
 import { getAbsoluteUrl } from '../config/site';
@@ -15,12 +15,10 @@ import {
 } from 'lucide-react';
 
 interface Props {
-  currency?: CurrencySymbol;
+  currency: CurrencySymbol;
 }
 
-export const CalculatorsIndexPage: React.FC<Props> = (props) => {
-  const context = useOutletContext<AppOutletContext | undefined>();
-  const currency = props.currency ?? context?.currency ?? '$';
+export const CalculatorsIndexPage: React.FC<Props> = ({ currency }) => {
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 

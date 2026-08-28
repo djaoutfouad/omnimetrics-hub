@@ -91,18 +91,3 @@ export interface FaqItem {
   answer: string;
   category?: string;
 }
-
-export interface AppOutletContext {
-  currency: CurrencySymbol;
-  setCurrency: (curr: CurrencySymbol) => void;
-  language: LanguageCode;
-  setLanguage: (lang: LanguageCode) => void;
-  selectedCategory: CategoryType;
-  setSelectedCategory: (cat: CategoryType) => void;
-  searchQuery: string;
-  setSearchQuery: (q: string) => void;
-  handleReset: () => void;
-  setActiveTool: (tool: ToolItem | null) => void;
-  setActiveArticle: (article: ArticleItem | null) => void;
-  handleOpenToolById: (id: string) => void;
-}

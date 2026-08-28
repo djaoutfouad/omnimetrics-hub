@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useParams, Link, useOutletContext } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { TOOLS_DATA } from '../data/tools';
-import { CurrencySymbol, AppOutletContext } from '../types';
+import { CurrencySymbol } from '../types';
 import { SeoHead } from '../components/SeoHead';
 import { AdSlot } from '../components/AdSlot';
 import { SITE_URL, getAbsoluteUrl } from '../config/site';
@@ -36,12 +36,10 @@ import { SalaryTaxCalc } from '../components/calculators/SalaryTaxCalc';
 import { CalculatorDisclaimer, DisclaimerDomain } from '../components/CalculatorDisclaimer';
 
 interface Props {
-  currency?: CurrencySymbol;
+  currency: CurrencySymbol;
 }
 
-export const CalculatorPage: React.FC<Props> = (props) => {
-  const context = useOutletContext<AppOutletContext | undefined>();
-  const currency = props.currency ?? context?.currency ?? '$';
+export const CalculatorPage: React.FC<Props> = ({ currency }) => {
   const { slugOrId } = useParams<{ slugOrId: string }>();
   const [copiedLink, setCopiedLink] = useState(false);
 
