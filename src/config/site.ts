@@ -14,6 +14,11 @@ export const SITE_CONFIG = {
   logoUrl: `${SITE_URL}/favicon.svg`,
   contactEmail: 'omnimetricshub@gmail.com',
   defaultOgImage: `${SITE_URL}/favicon.svg`,
+  emailjs: {
+    serviceId: 'service_qfoy2xa',
+    templateId: 'template_rza5fvr',
+    publicKey: 'CSWzZuNE7N6l1n4brD',
+  },
 };
 
 /**
