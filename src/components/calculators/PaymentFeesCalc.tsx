@@ -18,21 +18,21 @@ export const PaymentFeesCalc: React.FC<Props> = ({ currency }) => {
   const presets = PAYMENT_GATEWAY_PRESETS;
 
   // Sanitized values
-  const safeAmount = Math.max(0, amount || 0);
-  const safeTargetNet = Math.max(0, targetNet || 0);
-  const safeFeePercent = Math.max(0, Math.min(99.9, feePercent || 0));
-  const safeFixedFee = Math.max(0, fixedFee || 0);
+  const safeAmount = Number.isFinite(amount) ? Math.max(0, amount) : 0;
+  const safeTargetNet = Number.isFinite(targetNet) ? Math.max(0, targetNet) : 0;
+  const safeFeePercent = Number.isFinite(feePercent) ? Math.max(0, Math.min(99.9, feePercent)) : 0;
+  const safeFixedFee = Number.isFinite(fixedFee) ? Math.max(0, fixedFee) : 0;
 
   // Forward calculations
-  const forwardCut = (safeAmount * (safeFeePercent / 100)) + safeFixedFee;
-  const forwardNet = Math.max(0, safeAmount - forwardCut);
-  const forwardEffectiveFeePercent = safeAmount > 0 ? (forwardCut / safeAmount) * 100 : 0;
+  const forwardCut = Number.isFinite((safeAmount * (safeFeePercent / 100)) + safeFixedFee) ? (safeAmount * (safeFeePercent / 100)) + safeFixedFee : 0;
+  const forwardNet = Number.isFinite(safeAmount - forwardCut) ? Math.max(0, safeAmount - forwardCut) : 0;
+  const forwardEffectiveFeePercent = safeAmount > 0 && Number.isFinite((forwardCut / safeAmount) * 100) ? (forwardCut / safeAmount) * 100 : 0;
 
   // Reverse calculations: Invoice = (Target + Fixed) / (1 - (pct/100))
   const rateFraction = safeFeePercent / 100;
   const isReverseValid = rateFraction < 1;
-  const reverseInvoice = isReverseValid ? (safeTargetNet + safeFixedFee) / (1 - rateFraction) : 0;
-  const reverseCut = Math.max(0, reverseInvoice - safeTargetNet);
+  const reverseInvoice = isReverseValid && Number.isFinite((safeTargetNet + safeFixedFee) / (1 - rateFraction)) ? (safeTargetNet + safeFixedFee) / (1 - rateFraction) : 0;
+  const reverseCut = Number.isFinite(reverseInvoice - safeTargetNet) ? Math.max(0, reverseInvoice - safeTargetNet) : 0;
 
   const handleCopy = () => {
     let text = '';

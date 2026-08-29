@@ -13,18 +13,18 @@ export const RoasCalc: React.FC<Props> = ({ currency }) => {
   const [cogs, setCogs] = useState<number>(1000);
   const [copied, setCopied] = useState(false);
 
-  const safeAdSpend = Math.max(0, adSpend || 0);
-  const safeRevenue = Math.max(0, revenue || 0);
-  const safeConversions = Math.max(0, conversions || 0);
-  const safeCogs = Math.max(0, cogs || 0);
+  const safeAdSpend = Number.isFinite(adSpend) ? Math.max(0, adSpend) : 0;
+  const safeRevenue = Number.isFinite(revenue) ? Math.max(0, revenue) : 0;
+  const safeConversions = Number.isFinite(conversions) ? Math.max(0, conversions) : 0;
+  const safeCogs = Number.isFinite(cogs) ? Math.max(0, cogs) : 0;
 
-  const roasMultiplier = safeAdSpend > 0 ? safeRevenue / safeAdSpend : 0;
-  const roasPercent = roasMultiplier * 100;
-  const netAdProfit = safeRevenue - safeAdSpend;
-  const cpa = safeConversions > 0 ? safeAdSpend / safeConversions : 0;
-  const netTrueProfit = safeRevenue - safeAdSpend - safeCogs;
+  const roasMultiplier = safeAdSpend > 0 && Number.isFinite(safeRevenue / safeAdSpend) ? safeRevenue / safeAdSpend : 0;
+  const roasPercent = Number.isFinite(roasMultiplier * 100) ? roasMultiplier * 100 : 0;
+  const netAdProfit = Number.isFinite(safeRevenue - safeAdSpend) ? safeRevenue - safeAdSpend : 0;
+  const cpa = safeConversions > 0 && Number.isFinite(safeAdSpend / safeConversions) ? safeAdSpend / safeConversions : 0;
+  const netTrueProfit = Number.isFinite(safeRevenue - safeAdSpend - safeCogs) ? safeRevenue - safeAdSpend - safeCogs : 0;
   const totalCostBasis = safeAdSpend + safeCogs;
-  const trueRoi = totalCostBasis > 0 ? (netTrueProfit / totalCostBasis) * 100 : 0;
+  const trueRoi = totalCostBasis > 0 && Number.isFinite((netTrueProfit / totalCostBasis) * 100) ? (netTrueProfit / totalCostBasis) * 100 : 0;
 
   const handleCopy = () => {
     const text = `ROAS & Ad Spend Summary:\n- Total Ad Spend: ${currency}${safeAdSpend.toLocaleString()}\n- Revenue Generated: ${currency}${safeRevenue.toLocaleString()}\n- ROAS: ${roasMultiplier.toFixed(2)}x (${roasPercent.toFixed(0)}%)\n- Net Ad Profit: ${currency}${netAdProfit.toFixed(2)}\n- Cost Per Acquisition (CPA): ${currency}${cpa.toFixed(2)} (${safeConversions} conversions)\n- True Net Profit (after COGS): ${currency}${netTrueProfit.toFixed(2)} (ROI: ${trueRoi.toFixed(1)}%)`;

@@ -34,13 +34,18 @@ export interface ToolFaq {
 export interface ToolGuide {
   whatIsIt: string;
   howItWorks?: string;
+  inputExplanations?: { label: string; description: string }[];
+  outputExplanations?: { label: string; description: string }[];
   formulaExplanation: string;
   formulaMath: string;
   stepByStepExample: string;
+  howToInterpret?: string;
   whenToUse?: string[];
   commonMistakes?: string[];
+  limitationsAndAssumptions?: string[];
   practicalTips: string[];
   faqs: ToolFaq[];
+  relatedArticleSlugs?: string[];
 }
 
 export interface ToolItem {
@@ -84,6 +89,9 @@ export interface ArticleItem {
   snippet: string;
   tagColorClass: string;
   sections: ArticleSection[];
+  relatedToolIds?: string[];
+  relatedArticleSlugs?: string[];
+  faqs?: ToolFaq[];
 }
 
 export interface FaqItem {

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { SeoHead } from '../components/SeoHead';
 import { AdSlot } from '../components/AdSlot';
+import { ContentWithRails } from '../components/ContentWithRails';
 import { SITE_URL, getAbsoluteUrl, SITE_CONFIG } from '../config/site';
 import {
   ShieldCheck,
@@ -36,7 +37,7 @@ export const AboutPage: React.FC = () => {
   };
 
   return (
-    <main className="min-w-0 flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-8">
+    <ContentWithRails maxWidthClass="max-w-4xl 2xl:max-w-5xl">
       <SeoHead
         title="About Us & Quantitative Mission"
         description="Learn about OmniMetrics Hub: high-precision, client-side financial, e-commerce, and marketing calculation tools designed for founders, creators, and freelancers."
@@ -45,7 +46,8 @@ export const AboutPage: React.FC = () => {
         schemaData={schemaData}
       />
 
-      {/* Breadcrumbs */}
+      <div className="space-y-8">
+        {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-slate-400">
         <Link to="/" className="hover:text-slate-800 transition font-medium">
           Home
@@ -168,24 +170,34 @@ export const AboutPage: React.FC = () => {
       <section className="p-6 bg-slate-900 text-white rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="space-y-1 text-center sm:text-left">
           <h3 className="font-extrabold text-base text-slate-100">
-            Ready to Explore the Full Suite?
+            Transparent Formulas & Full Tool Directory
           </h3>
           <p className="text-xs text-slate-400">
-            Access all 12 financial, e-commerce, and marketing calculation tools.
+            Read our verified methodology or explore all 12 interactive financial tools.
           </p>
         </div>
-        <Link
-          to="/"
-          className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition shadow-sm flex items-center gap-1.5 whitespace-nowrap"
-        >
-          <Calculator className="w-4 h-4" />
-          <span>View All 12 Calculators</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            to="/methodology"
+            className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-xs transition border border-slate-700 flex items-center gap-1.5 whitespace-nowrap"
+          >
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <span>Our Methodology</span>
+          </Link>
+          <Link
+            to="/calculators"
+            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition shadow-sm flex items-center gap-1.5 whitespace-nowrap"
+          >
+            <Calculator className="w-4 h-4" />
+            <span>All 12 Calculators</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
       </section>
 
       {/* Bottom Ad */}
       <AdSlot position="bottom" />
-    </main>
-  );
+    </div>
+  </ContentWithRails>
+);
 };

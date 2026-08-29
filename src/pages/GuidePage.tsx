@@ -4,6 +4,7 @@ import { ARTICLES_DATA } from '../data/articles';
 import { TOOLS_DATA } from '../data/tools';
 import { SeoHead } from '../components/SeoHead';
 import { AdSlot } from '../components/AdSlot';
+import { ContentWithRails } from '../components/ContentWithRails';
 import { SITE_URL, getAbsoluteUrl, SITE_CONFIG } from '../config/site';
 import {
   ChevronRight,
@@ -13,286 +14,403 @@ import {
   Check,
   BookOpen,
   ArrowRight,
+  HelpCircle,
+  FileText,
+  AlertTriangle,
 } from 'lucide-react';
+
+const ALIAS_MAP: Record<string, string> = {
+  'loan-amortization-emi-guide': 'understanding-loan-amortization-emi',
+  'compound-interest-growth-guide': 'compound-interest-explained',
+  'late-payment-interest-guide': 'late-payment-interest-and-commercial-debt',
+  'salary-take-home-pay-guide': 'salary-to-hourly-and-take-home-pay',
+  'ecommerce-landed-cost-guide': 'landed-cost-and-tariffs-guide',
+};
 
 export const GuidePage: React.FC = () => {
   const { slugOrId } = useParams<{ slugOrId: string }>();
   const [copiedLink, setCopiedLink] = useState(false);
 
+  const resolvedSlugOrId = slugOrId ? ALIAS_MAP[slugOrId] || slugOrId : '';
+
   const article = ARTICLES_DATA.find(
-    (a) => a.slug === slugOrId || a.id === slugOrId
+    (a) =>
+      a.id === resolvedSlugOrId ||
+      a.slug === resolvedSlugOrId ||
+      a.id === slugOrId ||
+      a.slug === slugOrId
   );
 
   if (!article) {
     return (
-      <main className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-2xl font-black text-slate-900 mb-2">Guide Not Found</h1>
-        <p className="text-sm text-slate-500 mb-6">
-          The requested knowledge base article does not exist or has been relocated.
-        </p>
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition shadow-sm"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Return to Hub</span>
-        </Link>
-      </main>
+      <ContentWithRails maxWidthClass="max-w-4xl 2xl:max-w-5xl">
+        <SeoHead
+          title="Guide Not Found | OmniMetrics Hub"
+          description="The financial guide or article you are looking for could not be found."
+          canonicalPath="/blog"
+        />
+        <div className="text-center py-20 bg-white rounded-3xl border border-slate-200 p-8 space-y-4">
+          <BookOpen className="w-12 h-12 text-slate-300 mx-auto" />
+          <h1 className="text-2xl font-black text-slate-900">Guide Not Found</h1>
+          <p className="text-sm text-slate-500 max-w-md mx-auto">
+            We could not find the educational guide you were looking for. It may have been updated or moved.
+          </p>
+          <Link
+            to="/blog"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Knowledge Base
+          </Link>
+        </div>
+      </ContentWithRails>
     );
   }
 
-  const handleShare = () => {
+  // Cross-linked tools
+  const relatedTools = TOOLS_DATA.filter((tool) =>
+    (article.relatedToolIds || []).includes(tool.id)
+  );
+
+  // Cross-linked articles
+  const relatedArticles = ARTICLES_DATA.filter(
+    (a) => a.id !== article.id && a.category === article.category
+  ).slice(0, 2);
+
+  const handleShare = async () => {
+    const url = window.location.href;
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(window.location.href);
-      setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 2000);
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopiedLink(true);
+        setTimeout(() => setCopiedLink(false), 2000);
+      } catch {
+        // clipboard fallback
+      }
     }
   };
 
-  // Find calculators that relate to this article's topic
-  const relatedCalculators = TOOLS_DATA.filter((tool) => {
-    if (article.slug?.includes('fee') && tool.id === 'calc-fees') return true;
-    if (article.slug?.includes('margin') && (tool.id === 'calc-margin' || tool.id === 'calc-landed-cost')) return true;
-    if (article.slug?.includes('roas') && (tool.id === 'calc-roas' || tool.id === 'calc-cr-cpa')) return true;
-    if (article.slug?.includes('break-even') && (tool.id === 'calc-breakeven' || tool.id === 'calc-margin')) return true;
-    if (article.slug?.includes('freelance') && (tool.id === 'calc-freelance' || tool.id === 'calc-late-interest')) return true;
-    if (article.slug?.includes('ltv') && (tool.id === 'calc-ltv' || tool.id === 'calc-roas')) return true;
-    if (article.slug?.includes('compound') && (tool.id === 'calc-compound' || tool.id === 'calc-loan-emi')) return true;
-    return tool.category.toUpperCase().includes(article.category.toUpperCase());
-  }).slice(0, 3);
+  const articleCanonicalUrl = getAbsoluteUrl(
+    `/blog/${article.slug || article.id}`
+  );
 
-  const fallbackCalculators = relatedCalculators.length > 0 ? relatedCalculators : TOOLS_DATA.slice(0, 3);
+  const schemaGraph: Record<string, unknown>[] = [
+    {
+      '@type': 'Article',
+      '@id': `${articleCanonicalUrl}#article`,
+      headline: article.title,
+      description: article.snippet,
+      url: articleCanonicalUrl,
+      datePublished: '2025-01-15',
+      dateModified: '2026-03-01',
+      inLanguage: 'en-US',
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': articleCanonicalUrl,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'OmniMetrics Hub',
+        url: `${SITE_URL}/`,
+        logo: SITE_CONFIG.logoUrl,
+      },
+      author: {
+        '@type': 'Organization',
+        name: 'OmniMetrics Hub Quantitative Research & Financial Architecture Team',
+        url: `${SITE_URL}/about`,
+      },
+      about: {
+        '@type': 'Thing',
+        name: article.category,
+      },
+    },
+  ];
 
-  const canonicalUrl = getAbsoluteUrl(`/guides/${article.slug || article.id}`);
+  if (article.faqs && article.faqs.length > 0) {
+    schemaGraph.push({
+      '@type': 'FAQPage',
+      '@id': `${articleCanonicalUrl}#faq`,
+      mainEntity: article.faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.a,
+        },
+      })),
+    });
+  }
 
   const schemaData = {
     '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'Article',
-        headline: article.title,
-        description: article.snippet,
-        author: {
-          '@type': 'Organization',
-          name: 'OmniMetrics Hub Quantitative Research Team',
-          url: `${SITE_URL}/`,
-        },
-        publisher: {
-          '@type': 'Organization',
-          name: 'OmniMetrics Hub',
-          url: `${SITE_URL}/`,
-          logo: {
-            '@type': 'ImageObject',
-            url: SITE_CONFIG.logoUrl,
-          },
-        },
-        datePublished: '2026-01-15',
-        dateModified: '2026-03-01',
-        mainEntityOfPage: canonicalUrl,
-      },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          {
-            '@type': 'ListItem',
-            position: 1,
-            name: 'Home',
-            item: `${SITE_URL}/`,
-          },
-          {
-            '@type': 'ListItem',
-            position: 2,
-            name: 'Knowledge Base',
-            item: `${SITE_URL}/#guides-section`,
-          },
-          {
-            '@type': 'ListItem',
-            position: 3,
-            name: article.title,
-            item: canonicalUrl,
-          },
-        ],
-      },
-    ],
+    '@graph': schemaGraph,
   };
 
   return (
-    <main className="min-w-0 flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-8">
+    <ContentWithRails maxWidthClass="max-w-4xl 2xl:max-w-5xl">
       <SeoHead
         title={article.title}
         description={article.snippet}
-        keywords={[article.category.toLowerCase(), 'financial guide', 'pricing formula', 'merchant fees', 'business math']}
-        canonicalPath={`/guides/${article.slug || article.id}`}
+        keywords={[
+          article.category.toLowerCase(),
+          'financial guide',
+          'pricing formula',
+          'merchant fees',
+          'business math',
+          'break-even analysis',
+        ]}
+        canonicalPath={`/blog/${article.slug || article.id}`}
         schemaData={schemaData}
       />
 
-      {/* Breadcrumbs */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-slate-400">
-        <Link to="/" className="hover:text-slate-800 transition font-medium">
-          Home
-        </Link>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <Link to="/" className="font-semibold text-slate-500 uppercase tracking-wider text-[10px] hover:text-slate-800 transition">
-          Knowledge Base
-        </Link>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <span className="font-bold text-slate-900 truncate" aria-current="page">
-          {article.title}
-        </span>
-      </nav>
+      <div className="space-y-8">
+        {/* Breadcrumbs */}
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-slate-400">
+          <Link to="/" className="hover:text-slate-800 transition font-medium">
+            Home
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5" />
+          <Link to="/blog" className="font-semibold text-slate-500 uppercase tracking-wider text-[10px] hover:text-slate-800 transition">
+            Guides & Knowledge Base
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5" />
+          <span className="font-bold text-slate-900 truncate" aria-current="page">
+            {article.title}
+          </span>
+        </nav>
 
-      {/* Article Header */}
-      <header className="space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <span className={`text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded-full ${article.tagColorClass}`}>
-              {article.category}
-            </span>
-            <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-400">
-              <Clock className="w-3.5 h-3.5" />
-              {article.readTime}
-            </span>
+        {/* Article Header */}
+        <header className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className={`text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded-full ${article.tagColorClass}`}>
+                {article.category}
+              </span>
+              <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-400">
+                <Clock className="w-3.5 h-3.5" />
+                {article.readTime}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleShare}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition shadow-2xs cursor-pointer"
+              title="Share this guide"
+            >
+              {copiedLink ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="text-emerald-700">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Share2 className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Share Guide</span>
+                </>
+              )}
+            </button>
           </div>
 
-          <button
-            type="button"
-            onClick={handleShare}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition shadow-2xs cursor-pointer"
-            title="Share this guide"
-          >
-            {copiedLink ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-emerald-600" />
-                <span className="text-emerald-700">Copied!</span>
-              </>
-            ) : (
-              <>
-                <Share2 className="w-3.5 h-3.5 text-slate-500" />
-                <span>Share Guide</span>
-              </>
-            )}
-          </button>
-        </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+            {article.title}
+          </h1>
 
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
-          {article.title}
-        </h1>
-        <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-medium">
-          {article.snippet}
-        </p>
-      </header>
+          <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 border-y border-slate-200/80 py-3">
+            <div>
+              <span className="font-medium text-slate-400">Author: </span>
+              <span className="font-bold text-slate-700">OmniMetrics Quantitative Research Team</span>
+            </div>
+            <div>
+              <span className="font-medium text-slate-400">Published: </span>
+              <span className="font-semibold text-slate-700">January 2025</span>
+            </div>
+            <div>
+              <span className="font-medium text-slate-400">Audited: </span>
+              <span className="font-semibold text-emerald-700">March 2026</span>
+            </div>
+          </div>
+        </header>
 
-      {/* Leaderboard AdSlot */}
-      <AdSlot position="leaderboard" />
-
-      {/* Article Content Container */}
-      <article className="bg-white rounded-3xl border border-slate-200/90 shadow-xs p-6 sm:p-9 space-y-8 text-slate-800">
-        {article.sections.map((sec, idx) => (
-          <section key={idx} className="space-y-3.5">
-            {sec.heading && (
-              <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
-                {sec.heading}
-              </h2>
-            )}
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed whitespace-pre-line">
-              {sec.content}
+        {/* Article Content Container */}
+        <article className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-10 space-y-8">
+          {/* Introduction Snippet */}
+          <div className="bg-slate-50 rounded-2xl p-5 border-l-4 border-slate-900">
+            <p className="text-sm font-medium text-slate-700 leading-relaxed italic">
+              {article.snippet}
             </p>
+          </div>
 
-            {/* Formula Block */}
-            {sec.formula && (
-              <div className="p-4 sm:p-5 bg-slate-900 text-slate-100 rounded-2xl font-mono text-xs leading-relaxed overflow-x-auto shadow-inner">
-                <pre className="whitespace-pre-wrap">{sec.formula}</pre>
+          {/* Render Sections */}
+          {article.sections.map((section, idx) => (
+            <section key={idx} className="space-y-4">
+              {section.heading && (
+                <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-slate-600 shrink-0" />
+                  <span>{section.heading}</span>
+                </h2>
+              )}
+
+              <div className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">
+                {section.content}
               </div>
-            )}
 
-            {/* Data Table */}
-            {sec.table && (
-              <div className="overflow-x-auto border border-slate-200 rounded-2xl my-4">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="bg-slate-50 border-b border-slate-200 text-slate-700 font-extrabold text-[11px] uppercase tracking-wider">
-                      {sec.table.headers.map((h, hIdx) => (
-                        <th key={hIdx} className="p-3">
-                          {h}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 text-slate-600">
-                    {sec.table.rows.map((row, rIdx) => (
-                      <tr key={rIdx} className="hover:bg-slate-50/80 transition">
-                        {row.map((cell, cIdx) => (
-                          <td key={cIdx} className="p-3 font-medium">
-                            {cell}
-                          </td>
+              {section.formula && (
+                <div className="p-4 bg-slate-900 text-white rounded-2xl font-mono text-xs overflow-x-auto shadow-inner">
+                  <span className="text-emerald-400 font-bold block mb-1">Mathematical Formula:</span>
+                  <code>{section.formula}</code>
+                </div>
+              )}
+
+              {section.table && (
+                <div className="overflow-x-auto rounded-2xl border border-slate-200 my-4">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-100/80 text-slate-700 font-bold border-b border-slate-200">
+                      <tr>
+                        {section.table.headers.map((h, hIdx) => (
+                          <th key={hIdx} className="p-3">
+                            {h}
+                          </th>
                         ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {section.table.rows.map((row, rIdx) => (
+                        <tr key={rIdx} className="hover:bg-slate-50">
+                          {row.map((cell, cIdx) => (
+                            <td key={cIdx} className="p-3 text-slate-600 font-medium">
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
 
-            {/* Key Bullet Takeaways */}
-            {sec.bulletPoints && (
-              <div className="p-4 bg-emerald-50/70 border border-emerald-200/80 rounded-2xl space-y-2">
-                <h3 className="font-bold text-xs text-emerald-950 uppercase tracking-wider">
-                  Key Strategic Rules:
-                </h3>
-                <ul className="space-y-1.5 text-xs text-slate-700 list-disc pl-5">
-                  {sec.bulletPoints.map((bp, bIdx) => (
-                    <li key={bIdx} className="leading-relaxed font-medium">
-                      {bp}
+              {section.bulletPoints && section.bulletPoints.length > 0 && (
+                <ul className="space-y-2 bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                  {section.bulletPoints.map((pt, pIdx) => (
+                    <li key={pIdx} className="flex items-start gap-2.5 text-xs text-slate-700 leading-relaxed">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+                      <span>{pt}</span>
                     </li>
                   ))}
                 </ul>
-              </div>
-            )}
-          </section>
-        ))}
-      </article>
-
-      {/* In-content Ad Placement */}
-      <AdSlot position="mid-page" />
-
-      {/* Suggested Interactive Calculators */}
-      <section aria-labelledby="suggested-calcs-heading" className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 id="suggested-calcs-heading" className="font-black text-xl text-slate-900 tracking-tight flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-emerald-600" />
-            <span>Apply These Formulas in Live Calculators</span>
-          </h3>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {fallbackCalculators.map((tool) => (
-            <Link
-              key={tool.id}
-              to={`/tools/${tool.slug}`}
-              className="bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-sm transition flex flex-col justify-between group"
-            >
-              <div>
-                <span className={`text-[9px] font-extrabold uppercase tracking-wider block mb-1 ${tool.tagColor}`}>
-                  {tool.category}
-                </span>
-                <h4 className="font-bold text-sm text-slate-900 mb-1 group-hover:text-emerald-700 transition">
-                  {tool.name}
-                </h4>
-                <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
-                  {tool.description}
-                </p>
-              </div>
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-700 group-hover:text-emerald-600 transition">
-                <span>Launch Tool</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </div>
-            </Link>
+              )}
+            </section>
           ))}
-        </div>
-      </section>
 
-      {/* Bottom Ad Placement */}
-      <AdSlot position="bottom" />
-    </main>
+          {/* Detailed FAQs if present */}
+          {article.faqs && article.faqs.length > 0 && (
+            <section className="space-y-4 pt-4 border-t border-slate-100">
+              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                <HelpCircle className="w-5 h-5 text-indigo-500 shrink-0" />
+                <span>Frequently Asked Questions</span>
+              </h2>
+              <div className="space-y-3">
+                {article.faqs.map((faq, idx) => (
+                  <div key={idx} className="bg-slate-50/70 rounded-2xl p-4 border border-slate-200/70">
+                    <h3 className="font-bold text-xs text-slate-900 mb-1.5">{faq.q}</h3>
+                    <p className="text-xs text-slate-600 leading-relaxed">{faq.a}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Educational Disclaimer */}
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 text-xs leading-relaxed">
+            <span className="font-bold text-slate-700">Financial Disclaimer: </span>
+            This guide is published for educational and analytical purposes only. OmniMetrics Hub is not a licensed financial advisor, CPA, or registered broker. Always verify your specific business figures with a qualified professional.
+          </div>
+        </article>
+
+        {/* In-content Ad Placement (Between article and interactive tools) */}
+        <AdSlot position="in-content" />
+
+        {/* Suggested Interactive Calculators */}
+        {relatedTools.length > 0 && (
+          <section aria-labelledby="guide-related-tools" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 id="guide-related-tools" className="text-lg font-bold text-slate-900">
+                Interactive Calculators for This Topic
+              </h3>
+              <Link to="/calculators" className="text-xs font-bold text-slate-500 hover:text-slate-900 transition">
+                All 12 Tools →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {relatedTools.map((tool) => (
+                <Link
+                  key={tool.id}
+                  to={`/tools/${tool.slug}`}
+                  className="group block p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-slate-400 hover:shadow-md transition"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-xl ${tool.iconBgColor} ${tool.iconColor} flex items-center justify-center font-bold text-sm shrink-0`}>
+                      {tool.name.slice(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <span className={`text-[10px] font-extrabold uppercase ${tool.tagColor}`}>
+                        {tool.category}
+                      </span>
+                      <h4 className="font-bold text-sm text-slate-900 group-hover:text-slate-700 transition">
+                        {tool.name}
+                      </h4>
+                    </div>
+                  </div>
+                  <p className="mt-2.5 text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                    {tool.description}
+                  </p>
+                  <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-600">
+                    <span>Calculate Now</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Related Educational Guides */}
+        {relatedArticles.length > 0 && (
+          <section aria-labelledby="guide-related-articles" className="space-y-4">
+            <h3 id="guide-related-articles" className="text-lg font-bold text-slate-900">
+              Related Knowledge Base Articles
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {relatedArticles.map((relArticle) => (
+                <Link
+                  key={relArticle.id}
+                  to={`/blog/${relArticle.slug || relArticle.id}`}
+                  className="group flex flex-col justify-between p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-indigo-300 hover:shadow-md transition"
+                >
+                  <div className="space-y-2">
+                    <span className={`text-[10px] font-extrabold uppercase ${relArticle.tagColorClass}`}>
+                      {relArticle.category}
+                    </span>
+                    <h4 className="font-bold text-sm text-slate-900 group-hover:text-indigo-600 transition leading-snug">
+                      {relArticle.title}
+                    </h4>
+                    <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                      {relArticle.snippet}
+                    </p>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-indigo-600">
+                    <span>Read Guide</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Bottom Ad Placement */}
+        <AdSlot position="bottom" />
+      </div>
+    </ContentWithRails>
   );
 };

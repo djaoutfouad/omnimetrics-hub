@@ -12,18 +12,18 @@ export const ProfitMarginCalc: React.FC<Props> = ({ currency }) => {
   const [targetMargin, setTargetMargin] = useState<number>(40);
   const [copied, setCopied] = useState(false);
 
-  const safeCost = Math.max(0, cost || 0);
-  const safePrice = Math.max(0, price || 0);
-  const safeTargetMargin = Math.max(0, Math.min(99.9, targetMargin || 0));
+  const safeCost = Number.isFinite(cost) ? Math.max(0, cost) : 0;
+  const safePrice = Number.isFinite(price) ? Math.max(0, price) : 0;
+  const safeTargetMargin = Number.isFinite(targetMargin) ? Math.max(0, Math.min(99.9, targetMargin)) : 0;
 
-  const grossProfit = safePrice - safeCost;
-  const marginPct = safePrice > 0 ? (grossProfit / safePrice) * 100 : 0;
-  const markupPct = safeCost > 0 ? (grossProfit / safeCost) * 100 : 0;
-  const priceMultiplier = safeCost > 0 ? safePrice / safeCost : 0;
+  const grossProfit = Number.isFinite(safePrice - safeCost) ? safePrice - safeCost : 0;
+  const marginPct = safePrice > 0 && Number.isFinite((grossProfit / safePrice) * 100) ? (grossProfit / safePrice) * 100 : 0;
+  const markupPct = safeCost > 0 && Number.isFinite((grossProfit / safeCost) * 100) ? (grossProfit / safeCost) * 100 : 0;
+  const priceMultiplier = safeCost > 0 && Number.isFinite(safePrice / safeCost) ? safePrice / safeCost : 0;
 
   // Price for target margin: Price = Cost / (1 - targetMargin/100)
   const isTargetValid = safeTargetMargin < 100;
-  const targetRequiredPrice = isTargetValid ? safeCost / (1 - (safeTargetMargin / 100)) : 0;
+  const targetRequiredPrice = isTargetValid && Number.isFinite(safeCost / (1 - (safeTargetMargin / 100))) ? safeCost / (1 - (safeTargetMargin / 100)) : 0;
 
   const handleCopy = () => {
     const text = `Profit Margin & Markup Breakdown:\n- Cost Price: ${currency}${safeCost.toFixed(2)}\n- Selling Price: ${currency}${safePrice.toFixed(2)}\n- Gross Profit: ${currency}${grossProfit.toFixed(2)}\n- Profit Margin: ${marginPct.toFixed(1)}%\n- Markup: ${markupPct.toFixed(1)}%\n- Price Multiplier: ${priceMultiplier.toFixed(2)}x`;

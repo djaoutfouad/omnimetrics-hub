@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { CurrencySymbol, LanguageCode } from '../types';
 import { TRANSLATIONS, LANGUAGE_OPTIONS } from '../data/translations';
 import { Search, CheckCircle, ArrowUpRight, ChevronDown, Check } from 'lucide-react';
@@ -60,10 +61,32 @@ export const Header: React.FC<Props> = ({
         </div>
 
         {/* 2026 BADGE */}
-        <div className="hidden lg:flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 shrink-0">
+        <div className="hidden xl:flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 shrink-0">
           <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
           {t.badge2026}
         </div>
+
+        {/* PRIMARY NAV LINKS */}
+        <nav aria-label="Main Navigation" className="hidden md:flex items-center gap-1 text-xs font-bold text-slate-600 shrink-0">
+          <Link
+            to="/calculators"
+            className="px-2.5 py-1.5 rounded-xl hover:bg-slate-100 hover:text-slate-900 transition"
+          >
+            Calculators
+          </Link>
+          <Link
+            to="/blog"
+            className="px-2.5 py-1.5 rounded-xl hover:bg-slate-100 hover:text-slate-900 transition"
+          >
+            Guides & Blog
+          </Link>
+          <Link
+            to="/methodology"
+            className="px-2.5 py-1.5 rounded-xl hover:bg-slate-100 hover:text-slate-900 transition hidden lg:inline"
+          >
+            Methodology
+          </Link>
+        </nav>
 
         {/* SEARCH BAR */}
         <div className="flex-1 max-w-xs mx-1 sm:mx-3">

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import emailjs from '@emailjs/browser';
 import { SeoHead } from '../components/SeoHead';
+
 import { AdSlot } from '../components/AdSlot';
+import { ContentWithRails } from '../components/ContentWithRails';
 import { SITE_URL, getAbsoluteUrl, SITE_CONFIG } from '../config/site';
 import {
   Mail,
@@ -75,31 +76,26 @@ export const ContactPage: React.FC = () => {
       to_name: 'OmniMetrics Hub Support',
     };
 
-    // Attempt transmission with primary key, then fallback key if Account not found (404) occurs
-    const keysToTry = [
-      SITE_CONFIG.emailjs.publicKey,
-      'CSWzZuNE7N6l1n4brD',
-    ].filter(Boolean);
-
+    // Transmit using official EmailJS configuration
     let sent = false;
     let lastError: any = null;
 
-    for (const key of keysToTry) {
-      try {
-        await emailjs.send(
-          SITE_CONFIG.emailjs.serviceId,
-          SITE_CONFIG.emailjs.templateId,
-          templateParams,
-          {
-            publicKey: key,
-          }
-        );
-        sent = true;
-        break;
-      } catch (err: any) {
-        lastError = err;
-        console.warn(`EmailJS key attempt failed for key: ${key?.slice?.(0, 4)}...`, err);
-      }
+    try {
+      const emailjsModule = await import('@emailjs/browser');
+      const emailjsClient = emailjsModule.default || emailjsModule;
+
+      await emailjsClient.send(
+        SITE_CONFIG.emailjs.serviceId,
+        SITE_CONFIG.emailjs.templateId,
+        templateParams,
+        {
+          publicKey: SITE_CONFIG.emailjs.publicKey,
+        }
+      );
+      sent = true;
+    } catch (err: any) {
+      lastError = err;
+      console.warn('EmailJS transmission error:', err);
     }
 
     if (sent) {
@@ -146,7 +142,7 @@ export const ContactPage: React.FC = () => {
   };
 
   return (
-    <main className="min-w-0 flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-6 space-y-8">
+    <ContentWithRails maxWidthClass="max-w-3xl 2xl:max-w-4xl">
       <SeoHead
         title="Contact Us & Feedback"
         description="Contact the OmniMetrics Hub team. Inquiries regarding financial calculation formulas, suggestions, or editorial feedback."
@@ -155,7 +151,8 @@ export const ContactPage: React.FC = () => {
         schemaData={schemaData}
       />
 
-      {/* Breadcrumbs */}
+      <div className="space-y-8">
+        {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-slate-400">
         <Link to="/" className="hover:text-slate-800 transition font-medium">
           Home
@@ -438,6 +435,7 @@ export const ContactPage: React.FC = () => {
 
       {/* Bottom Ad */}
       <AdSlot position="bottom" />
-    </main>
-  );
+    </div>
+  </ContentWithRails>
+);
 };

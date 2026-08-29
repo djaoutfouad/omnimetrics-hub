@@ -13,20 +13,20 @@ export const ConversionRateCpaCalc: React.FC<Props> = ({ currency }) => {
   const [aov, setAov] = useState<number>(45);
   const [copied, setCopied] = useState(false);
 
-  const safeVisitors = Math.max(0, visitors || 0);
-  const safeConversions = Math.max(0, conversions || 0);
-  const safeAdSpend = Math.max(0, adSpend || 0);
-  const safeAov = Math.max(0, aov || 0);
+  const safeVisitors = Number.isFinite(visitors) ? Math.max(0, visitors) : 0;
+  const safeConversions = Number.isFinite(conversions) ? Math.max(0, conversions) : 0;
+  const safeAdSpend = Number.isFinite(adSpend) ? Math.max(0, adSpend) : 0;
+  const safeAov = Number.isFinite(aov) ? Math.max(0, aov) : 0;
 
   const isConversionExceeded = safeVisitors > 0 && safeConversions > safeVisitors;
 
   // Formulas
-  const crPercent = safeVisitors > 0 ? (safeConversions / safeVisitors) * 100 : 0;
-  const cpa = safeConversions > 0 ? safeAdSpend / safeConversions : 0;
-  const cpc = safeVisitors > 0 ? safeAdSpend / safeVisitors : 0;
-  const grossRevenue = safeConversions * safeAov;
-  const roas = safeAdSpend > 0 ? grossRevenue / safeAdSpend : 0;
-  const visitorsPer100Conversions = crPercent > 0 ? Math.round(100 / (crPercent / 100)) : 0;
+  const crPercent = safeVisitors > 0 && Number.isFinite((safeConversions / safeVisitors) * 100) ? (safeConversions / safeVisitors) * 100 : 0;
+  const cpa = safeConversions > 0 && Number.isFinite(safeAdSpend / safeConversions) ? safeAdSpend / safeConversions : 0;
+  const cpc = safeVisitors > 0 && Number.isFinite(safeAdSpend / safeVisitors) ? safeAdSpend / safeVisitors : 0;
+  const grossRevenue = Number.isFinite(safeConversions * safeAov) ? safeConversions * safeAov : 0;
+  const roas = safeAdSpend > 0 && Number.isFinite(grossRevenue / safeAdSpend) ? grossRevenue / safeAdSpend : 0;
+  const visitorsPer100Conversions = crPercent > 0 && Number.isFinite(100 / (crPercent / 100)) ? Math.round(100 / (crPercent / 100)) : 0;
 
   const handleCopy = () => {
     const text = `Conversion Rate & CPA Analysis:\n- Visitors / Clicks: ${safeVisitors.toLocaleString()}\n- Total Conversions: ${safeConversions.toLocaleString()}\n- Conversion Rate (CR): ${crPercent.toFixed(2)}%\n- Ad Spend: ${currency}${safeAdSpend.toLocaleString()}\n- Cost Per Acquisition (CPA): ${currency}${cpa.toFixed(2)}\n- Cost Per Click (CPC): ${currency}${cpc.toFixed(2)}\n- Est. Revenue (AOV ${currency}${safeAov}): ${currency}${grossRevenue.toLocaleString()} (${roas.toFixed(2)}x ROAS)\n- Traffic needed per 100 sales: ${visitorsPer100Conversions.toLocaleString()} visitors`;

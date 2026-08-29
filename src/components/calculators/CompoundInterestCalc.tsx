@@ -13,10 +13,10 @@ export const CompoundInterestCalc: React.FC<Props> = ({ currency }) => {
   const [years, setYears] = useState<number>(10);
   const [copied, setCopied] = useState(false);
 
-  const safePrincipal = Math.max(0, principal || 0);
-  const safeMonthly = Math.max(0, monthlyContribution || 0);
-  const safeRate = Math.max(0, annualRate || 0);
-  const safeYears = Math.max(1, Math.min(60, years || 1));
+  const safePrincipal = Number.isFinite(principal) ? Math.max(0, principal) : 0;
+  const safeMonthly = Number.isFinite(monthlyContribution) ? Math.max(0, monthlyContribution) : 0;
+  const safeRate = Number.isFinite(annualRate) ? Math.max(0, annualRate) : 0;
+  const safeYears = Number.isFinite(years) ? Math.max(1, Math.min(60, years)) : 1;
 
   // Future value formula with regular monthly deposits:
   // FV = P * (1 + r/n)^(nt) + PMT * [((1 + r/n)^(nt) - 1) / (r/n)]
@@ -32,12 +32,16 @@ export const CompoundInterestCalc: React.FC<Props> = ({ currency }) => {
   } else {
     const compoundFactor = Math.pow(1 + r_over_n, nt);
     const principalFV = safePrincipal * compoundFactor;
-    const annuityFV = safeMonthly * ((compoundFactor - 1) / r_over_n);
+    const annuityFV = r_over_n > 0 ? safeMonthly * ((compoundFactor - 1) / r_over_n) : 0;
     futureValue = principalFV + annuityFV;
   }
 
+  if (!Number.isFinite(futureValue)) {
+    futureValue = 0;
+  }
+
   const totalDeposits = safePrincipal + (safeMonthly * 12 * safeYears);
-  const totalInterestEarned = Math.max(0, futureValue - totalDeposits);
+  const totalInterestEarned = Number.isFinite(futureValue) ? Math.max(0, futureValue - totalDeposits) : 0;
 
   const handleCopy = () => {
     const text = `Compound Interest Projection:\n- Initial Principal: ${currency}${safePrincipal.toLocaleString()}\n- Monthly Deposit: ${currency}${safeMonthly.toLocaleString()}/mo\n- Annual Interest Rate: ${safeRate}%\n- Horizon: ${safeYears} years\n- Total Contributions: ${currency}${totalDeposits.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n- Total Interest Earned: ${currency}${totalInterestEarned.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n- Projected Future Value: ${currency}${futureValue.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;

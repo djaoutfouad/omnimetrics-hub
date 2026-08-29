@@ -13,15 +13,15 @@ export const CustomerLtvCalc: React.FC<Props> = ({ currency }) => {
   const [grossMarginPct, setGrossMarginPct] = useState<number>(60);
   const [copied, setCopied] = useState(false);
 
-  const safeAov = Math.max(0, aov || 0);
-  const safeFrequency = Math.max(0, purchaseFrequency || 0);
-  const safeLifespan = Math.max(0, lifespanYears || 0);
-  const safeMargin = Math.max(0, Math.min(100, grossMarginPct || 0));
+  const safeAov = Number.isFinite(aov) ? Math.max(0, aov) : 0;
+  const safeFrequency = Number.isFinite(purchaseFrequency) ? Math.max(0, purchaseFrequency) : 0;
+  const safeLifespan = Number.isFinite(lifespanYears) ? Math.max(0, lifespanYears) : 0;
+  const safeMargin = Number.isFinite(grossMarginPct) ? Math.max(0, Math.min(100, grossMarginPct)) : 0;
 
-  const annualCustomerRevenue = safeAov * safeFrequency;
-  const grossLtv = annualCustomerRevenue * safeLifespan;
-  const profitLtv = grossLtv * (safeMargin / 100);
-  const recommendedMaxCac = profitLtv / 3; // Standard SaaS/eCom 3:1 LTV:CAC target
+  const annualCustomerRevenue = Number.isFinite(safeAov * safeFrequency) ? safeAov * safeFrequency : 0;
+  const grossLtv = Number.isFinite(annualCustomerRevenue * safeLifespan) ? annualCustomerRevenue * safeLifespan : 0;
+  const profitLtv = Number.isFinite(grossLtv * (safeMargin / 100)) ? grossLtv * (safeMargin / 100) : 0;
+  const recommendedMaxCac = Number.isFinite(profitLtv / 3) ? profitLtv / 3 : 0; // Standard SaaS/eCom 3:1 LTV:CAC target
 
   const handleCopy = () => {
     const text = `Customer Lifetime Value (LTV) Summary:\n- Average Order Value (AOV): ${currency}${safeAov.toFixed(2)}\n- Purchase Frequency: ${safeFrequency} orders/yr\n- Customer Lifespan: ${safeLifespan} years\n- Gross Margin: ${safeMargin}%\n- Annual Value / Customer: ${currency}${annualCustomerRevenue.toFixed(2)}/yr\n- Gross Lifetime Revenue: ${currency}${grossLtv.toFixed(2)}\n- Net Lifetime Profit: ${currency}${profitLtv.toFixed(2)}\n- Recommended Max CAC (3:1 ratio): ${currency}${recommendedMaxCac.toFixed(2)}`;

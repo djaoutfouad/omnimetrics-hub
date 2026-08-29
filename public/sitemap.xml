@@ -16,6 +16,22 @@
     <priority>0.95</priority>
   </url>
 
+  <!-- Knowledge Base & Blog Directory -->
+  <url>
+    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/blog</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Calculation Methodology & Standards -->
+  <url>
+    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/methodology</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
   <!-- 12 High-Precision Financial & Business Calculators -->
   <url>
     <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/tools/payment-gateway-fees</loc>
@@ -90,45 +106,75 @@
     <priority>0.9</priority>
   </url>
 
-  <!-- 7 Comprehensive Knowledge Base Guides -->
+  <!-- 12 Comprehensive Knowledge Base & Blog Guides -->
   <url>
-    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/guides/payment-gateway-fees-breakdown</loc>
+    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/blog/payment-gateway-fees-breakdown</loc>
     <lastmod>2026-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/guides/margin-vs-markup-guide</loc>
+    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/blog/margin-vs-markup-guide</loc>
     <lastmod>2026-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/guides/how-to-calculate-roas</loc>
+    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/blog/how-to-calculate-roas</loc>
     <lastmod>2026-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/guides/how-to-calculate-break-even</loc>
+    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/blog/how-to-calculate-break-even</loc>
     <lastmod>2026-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/guides/freelancer-pricing-formula</loc>
+    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/blog/freelancer-pricing-formula</loc>
     <lastmod>2026-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/guides/customer-ltv-guide</loc>
+    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/blog/customer-ltv-guide</loc>
     <lastmod>2026-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/guides/compound-interest-explained</loc>
+    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/blog/compound-interest-explained</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/blog/landed-cost-and-tariffs-guide</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/blog/late-payment-interest-and-commercial-debt</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/blog/understanding-loan-amortization-emi</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/blog/salary-to-hourly-and-take-home-pay</loc>
+    <lastmod>2026-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://omnimetrics-hub.djaoutfouad19762321.workers.dev/blog/conversion-rate-and-cpa-guide</loc>
     <lastmod>2026-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>

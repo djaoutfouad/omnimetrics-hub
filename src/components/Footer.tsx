@@ -115,13 +115,28 @@ export const Footer: React.FC<Props> = ({
         {/* Legal & About Navigation */}
         <div>
           <h4 className="font-bold text-white uppercase tracking-wider text-[11px] mb-3">
-            Company & Transparency
+            Company & Resources
           </h4>
           <ul className="space-y-2 text-xs text-slate-400">
             <li>
               <Link to="/about" className="hover:text-white transition flex items-center gap-1.5">
                 <HeartHandshake className="w-3.5 h-3.5 text-emerald-400" />
                 <span>About OmniMetrics Hub</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/blog" className="hover:text-white transition">
+                Guides & Knowledge Base
+              </Link>
+            </li>
+            <li>
+              <Link to="/methodology" className="hover:text-white transition">
+                Calculation Methodology
+              </Link>
+            </li>
+            <li>
+              <Link to="/calculators" className="hover:text-white transition">
+                All 12 Calculators
               </Link>
             </li>
             <li>
@@ -151,7 +166,7 @@ export const Footer: React.FC<Props> = ({
                 <button
                   type="button"
                   onClick={onOpenSuggest}
-                  className="hover:text-white transition text-left text-emerald-400 font-semibold"
+                  className="hover:text-white transition text-left text-emerald-400 font-semibold cursor-pointer"
                 >
                   + Suggest a Calculator
                 </button>

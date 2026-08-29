@@ -12,9 +12,9 @@ export const LoanEmiCalc: React.FC<Props> = ({ currency }) => {
   const [tenureYears, setTenureYears] = useState<number>(5);
   const [copied, setCopied] = useState(false);
 
-  const safeLoanAmount = Math.max(0, loanAmount || 0);
-  const safeInterestRate = Math.max(0, interestRate || 0);
-  const safeTenureYears = Math.max(1, Math.min(40, tenureYears || 1));
+  const safeLoanAmount = Number.isFinite(loanAmount) ? Math.max(0, loanAmount) : 0;
+  const safeInterestRate = Number.isFinite(interestRate) ? Math.max(0, interestRate) : 0;
+  const safeTenureYears = Number.isFinite(tenureYears) ? Math.max(1, Math.min(40, tenureYears)) : 1;
 
   // Math
   const totalMonths = safeTenureYears * 12;
@@ -23,15 +23,20 @@ export const LoanEmiCalc: React.FC<Props> = ({ currency }) => {
   let monthlyEmi = 0;
   if (monthlyRate > 0 && totalMonths > 0) {
     const rateFactor = Math.pow(1 + monthlyRate, totalMonths);
-    monthlyEmi = (safeLoanAmount * monthlyRate * rateFactor) / (rateFactor - 1);
+    if (rateFactor > 1 && Number.isFinite(rateFactor)) {
+      monthlyEmi = (safeLoanAmount * monthlyRate * rateFactor) / (rateFactor - 1);
+    }
   } else if (totalMonths > 0) {
     monthlyEmi = safeLoanAmount / totalMonths;
   }
+  if (!Number.isFinite(monthlyEmi)) {
+    monthlyEmi = 0;
+  }
 
-  const totalPayment = monthlyEmi * totalMonths;
-  const totalInterest = Math.max(0, totalPayment - safeLoanAmount);
-  const principalPercent = totalPayment > 0 ? (safeLoanAmount / totalPayment) * 100 : 100;
-  const interestPercent = totalPayment > 0 ? (totalInterest / totalPayment) * 100 : 0;
+  const totalPayment = Number.isFinite(monthlyEmi * totalMonths) ? monthlyEmi * totalMonths : 0;
+  const totalInterest = Number.isFinite(totalPayment - safeLoanAmount) ? Math.max(0, totalPayment - safeLoanAmount) : 0;
+  const principalPercent = totalPayment > 0 && Number.isFinite((safeLoanAmount / totalPayment) * 100) ? (safeLoanAmount / totalPayment) * 100 : 100;
+  const interestPercent = totalPayment > 0 && Number.isFinite((totalInterest / totalPayment) * 100) ? (totalInterest / totalPayment) * 100 : 0;
 
   const handleCopy = () => {
     const text = `Loan & Monthly EMI Amortization Summary:\n- Principal Loan Amount: ${currency}${safeLoanAmount.toLocaleString()}\n- Interest Rate: ${safeInterestRate}% p.a.\n- Loan Tenure: ${safeTenureYears} Years (${totalMonths} monthly payments)\n- Monthly EMI: ${currency}${monthlyEmi.toFixed(2)}/mo\n- Total Interest Payable: ${currency}${totalInterest.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${interestPercent.toFixed(1)}% of total)\n- Total Repayment Amount: ${currency}${totalPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

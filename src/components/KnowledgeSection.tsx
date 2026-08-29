@@ -29,7 +29,7 @@ export const KnowledgeSection: React.FC<Props> = ({ onSelectArticle, language })
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {ARTICLES_DATA.map((article) => (
+        {ARTICLES_DATA.slice(0, 6).map((article) => (
           <div
             key={article.id}
             className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs hover:shadow-md hover:border-slate-300 transition-all group flex flex-col justify-between"
@@ -60,7 +60,7 @@ export const KnowledgeSection: React.FC<Props> = ({ onSelectArticle, language })
               <button
                 type="button"
                 onClick={() => onSelectArticle(article)}
-                className="text-xs font-bold text-slate-600 hover:text-slate-900 transition"
+                className="text-xs font-bold text-slate-600 hover:text-slate-900 transition cursor-pointer"
               >
                 Quick Preview
               </button>
@@ -74,6 +74,17 @@ export const KnowledgeSection: React.FC<Props> = ({ onSelectArticle, language })
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="mt-10 text-center">
+        <Link
+          to="/blog"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm rounded-2xl transition shadow-xs"
+        >
+          <BookOpen className="w-4 h-4 text-emerald-400" />
+          <span>Browse All {ARTICLES_DATA.length} Educational Guides</span>
+          <ArrowRight className="w-4 h-4" />
+        </Link>
       </div>
     </section>
   );

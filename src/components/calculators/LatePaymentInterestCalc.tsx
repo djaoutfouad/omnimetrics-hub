@@ -13,15 +13,15 @@ export const LatePaymentInterestCalc: React.FC<Props> = ({ currency }) => {
   const [statutoryFee, setStatutoryFee] = useState<number>(70);
   const [copied, setCopied] = useState(false);
 
-  const safePrincipal = Math.max(0, principal || 0);
-  const safeDays = Math.max(0, daysOverdue || 0);
-  const safeRate = Math.max(0, annualRate || 0);
-  const safeFee = Math.max(0, statutoryFee || 0);
+  const safePrincipal = Number.isFinite(principal) ? Math.max(0, principal) : 0;
+  const safeDays = Number.isFinite(daysOverdue) ? Math.max(0, daysOverdue) : 0;
+  const safeRate = Number.isFinite(annualRate) ? Math.max(0, annualRate) : 0;
+  const safeFee = Number.isFinite(statutoryFee) ? Math.max(0, statutoryFee) : 0;
 
   // Calculations
-  const dailyInterest = (safePrincipal * (safeRate / 100)) / 365;
-  const totalInterest = dailyInterest * safeDays;
-  const totalDue = safePrincipal + totalInterest + safeFee;
+  const dailyInterest = Number.isFinite((safePrincipal * (safeRate / 100)) / 365) ? (safePrincipal * (safeRate / 100)) / 365 : 0;
+  const totalInterest = Number.isFinite(dailyInterest * safeDays) ? dailyInterest * safeDays : 0;
+  const totalDue = Number.isFinite(safePrincipal + totalInterest + safeFee) ? safePrincipal + totalInterest + safeFee : safePrincipal;
 
   const handleCopy = () => {
     const text = `Invoice Late Payment & Interest Summary:\n- Principal Invoice Amount: ${currency}${safePrincipal.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n- Days Overdue: ${safeDays} days\n- Annual Statutory/Contract Rate: ${safeRate}%\n- Accrued Late Interest: ${currency}${totalInterest.toFixed(2)} (${currency}${dailyInterest.toFixed(2)} / day)\n- Statutory Recovery / Admin Compensation: ${currency}${safeFee.toFixed(2)}\n- TOTAL OUTSTANDING DEBT DUE: ${currency}${totalDue.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;

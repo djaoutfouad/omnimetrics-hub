@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { CurrencySymbol, CategoryType, ToolItem, ArticleItem, LanguageCode } from './types';
 import { TOOLS_DATA } from './data/tools';
+import { LANGUAGE_OPTIONS } from './data/translations';
 import { Header } from './components/Header';
-import { DockNav } from './components/DockNav';
-import { RightSidebarAd } from './components/RightSidebarAd';
 import { Footer } from './components/Footer';
 import { FloatingActionButton } from './components/FloatingActionButton';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -15,8 +14,10 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { HomePage } from './pages/HomePage';
 import { CalculatorPage } from './pages/CalculatorPage';
 import { CalculatorsIndexPage } from './pages/CalculatorsIndexPage';
+import { BlogIndexPage } from './pages/BlogIndexPage';
 import { GuidePage } from './pages/GuidePage';
 import { AboutPage } from './pages/AboutPage';
+import { MethodologyPage } from './pages/MethodologyPage';
 import { ContactPage } from './pages/ContactPage';
 import { LegalPage } from './pages/LegalPage';
 import { NotFoundPage } from './pages/NotFoundPage';
@@ -30,10 +31,58 @@ import { LegalModal, LegalTabType } from './components/modals/LegalModal';
 
 export default function App() {
   const navigate = useNavigate();
-  const [currency, setCurrency] = useState<CurrencySymbol>('$');
-  const [language, setLanguage] = useState<LanguageCode>('US');
+  const [currency, setCurrency] = useState<CurrencySymbol>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('omni_preferred_currency') as CurrencySymbol;
+        if (saved && ['$', '€', '£', 'C$', 'A$', '¥', '₹'].includes(saved)) {
+          return saved;
+        }
+      } catch {
+        // ignore
+      }
+    }
+    return '$';
+  });
+
+  const [language, setLanguage] = useState<LanguageCode>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('omni_preferred_language') as LanguageCode;
+        if (saved && LANGUAGE_OPTIONS.some((opt) => opt.code === saved)) {
+          return saved;
+        }
+      } catch {
+        // ignore
+      }
+    }
+    return 'US';
+  });
+
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+
+  const handleCurrencyChange = (c: CurrencySymbol) => {
+    setCurrency(c);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('omni_preferred_currency', c);
+      } catch {
+        // ignore
+      }
+    }
+  };
+
+  const handleLanguageChange = (lang: LanguageCode) => {
+    setLanguage(lang);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('omni_preferred_language', lang);
+      } catch {
+        // ignore
+      }
+    }
+  };
 
   // Modals state
   const [activeTool, setActiveTool] = useState<ToolItem | null>(null);
@@ -49,37 +98,6 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSearchFocus = () => {
-    navigate('/');
-    setTimeout(() => {
-      const input = document.getElementById('header-search');
-      if (input) input.focus();
-      const toolsGrid = document.getElementById('tools-grid');
-      if (toolsGrid) toolsGrid.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  };
-
-  const scrollToTools = () => {
-    navigate('/calculators');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const scrollToKnowledge = () => {
-    navigate('/');
-    setTimeout(() => {
-      const section = document.getElementById('blog-section');
-      if (section) section.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  };
-
-  const scrollToFaq = () => {
-    navigate('/');
-    setTimeout(() => {
-      const section = document.getElementById('faq-section');
-      if (section) section.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  };
-
   const handleOpenToolById = (toolId: string) => {
     const tool = TOOLS_DATA.find((t) => t.id === toolId || t.slug === toolId);
     if (tool) {
@@ -91,26 +109,12 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between selection:bg-emerald-500 selection:text-white relative">
       <ScrollToTop />
 
-      {/* Left Quick-Dock Navigation (Desktop) */}
-      <DockNav
-        onHomeClick={handleReset}
-        onSearchFocus={handleSearchFocus}
-        onCalculatorsClick={scrollToTools}
-        onKnowledgeClick={scrollToKnowledge}
-        onFaqClick={scrollToFaq}
-        onContactClick={() => navigate('/contact')}
-        onSuggestClick={() => setIsSuggestOpen(true)}
-      />
-
-      {/* Right Skyscraper Advertisement (Desktop 160x600 AdSense Ready) */}
-      <RightSidebarAd />
-
       {/* Top Header */}
       <Header
         currency={currency}
-        onCurrencyChange={setCurrency}
+        onCurrencyChange={handleCurrencyChange}
         language={language}
-        onLanguageChange={setLanguage}
+        onLanguageChange={handleLanguageChange}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onReset={handleReset}
@@ -118,7 +122,7 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="max-w-5xl xl:max-w-[960px] 2xl:max-w-6xl mx-auto px-4 sm:px-6 pt-6 flex-1 w-full pb-16">
+      <main className="flex-1 w-full pb-16">
         <ErrorBoundary>
           <Routes>
             <Route
@@ -146,6 +150,18 @@ export default function App() {
               element={<CalculatorsIndexPage currency={currency} />}
             />
             <Route
+              path="/blog"
+              element={<BlogIndexPage />}
+            />
+            <Route
+              path="/guides"
+              element={<BlogIndexPage />}
+            />
+            <Route
+              path="/blog/:slugOrId"
+              element={<GuidePage />}
+            />
+            <Route
               path="/tools/:slugOrId"
               element={<CalculatorPage currency={currency} />}
             />
@@ -166,6 +182,7 @@ export default function App() {
               element={<GuidePage />}
             />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/methodology" element={<MethodologyPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/privacy" element={<LegalPage />} />
             <Route path="/terms" element={<LegalPage />} />

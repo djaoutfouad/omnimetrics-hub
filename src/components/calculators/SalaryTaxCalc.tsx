@@ -12,18 +12,18 @@ export const SalaryTaxCalc: React.FC<Props> = ({ currency }) => {
   const [monthlyDeductions, setMonthlyDeductions] = useState<number>(150); // e.g. retirement/healthcare
   const [copied, setCopied] = useState(false);
 
-  const safeGross = Math.max(0, grossAnnual || 0);
-  const safeTaxRate = Math.max(0, Math.min(80, taxRate || 0));
-  const safeMonthlyDeductions = Math.max(0, monthlyDeductions || 0);
+  const safeGross = Number.isFinite(grossAnnual) ? Math.max(0, grossAnnual) : 0;
+  const safeTaxRate = Number.isFinite(taxRate) ? Math.max(0, Math.min(80, taxRate)) : 0;
+  const safeMonthlyDeductions = Number.isFinite(monthlyDeductions) ? Math.max(0, monthlyDeductions) : 0;
 
-  const annualTax = safeGross * (safeTaxRate / 100);
-  const annualDeductions = safeMonthlyDeductions * 12;
-  const annualNet = Math.max(0, safeGross - annualTax - annualDeductions);
-  const monthlyGross = safeGross / 12;
-  const monthlyNet = annualNet / 12;
-  const biWeeklyNet = annualNet / 26;
-  const weeklyNet = annualNet / 52;
-  const effectiveTaxPct = safeGross > 0 ? ((annualTax + annualDeductions) / safeGross) * 100 : 0;
+  const annualTax = Number.isFinite(safeGross * (safeTaxRate / 100)) ? safeGross * (safeTaxRate / 100) : 0;
+  const annualDeductions = Number.isFinite(safeMonthlyDeductions * 12) ? safeMonthlyDeductions * 12 : 0;
+  const annualNet = Number.isFinite(safeGross - annualTax - annualDeductions) ? Math.max(0, safeGross - annualTax - annualDeductions) : 0;
+  const monthlyGross = Number.isFinite(safeGross / 12) ? safeGross / 12 : 0;
+  const monthlyNet = Number.isFinite(annualNet / 12) ? annualNet / 12 : 0;
+  const biWeeklyNet = Number.isFinite(annualNet / 26) ? annualNet / 26 : 0;
+  const weeklyNet = Number.isFinite(annualNet / 52) ? annualNet / 52 : 0;
+  const effectiveTaxPct = safeGross > 0 && Number.isFinite(((annualTax + annualDeductions) / safeGross) * 100) ? ((annualTax + annualDeductions) / safeGross) * 100 : 0;
 
   const handleCopy = () => {
     const text = `Net Salary & Tax Payout Breakdown:\n- Gross Annual Salary: ${currency}${safeGross.toLocaleString()}\n- Estimated Tax Rate: ${safeTaxRate}%\n- Annual Taxes Withheld: ${currency}${annualTax.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n- Annual Other Deductions: ${currency}${annualDeductions.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n- Annual Net Take-Home: ${currency}${annualNet.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n- Monthly Net Take-Home: ${currency}${monthlyNet.toLocaleString('en-US', { minimumFractionDigits: 2 })} / mo\n- Bi-Weekly Net: ${currency}${biWeeklyNet.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;

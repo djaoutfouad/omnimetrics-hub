@@ -9,6 +9,7 @@ import { CompleteGuideSection } from '../components/CompleteGuideSection';
 import { KnowledgeSection } from '../components/KnowledgeSection';
 import { FaqSection } from '../components/FaqSection';
 import { AdSlot } from '../components/AdSlot';
+import { ContentWithRails } from '../components/ContentWithRails';
 import { SeoHead } from '../components/SeoHead';
 
 interface Props {
@@ -53,7 +54,7 @@ export const HomePage: React.FC<Props> = ({
   }, [selectedCategory, searchQuery]);
 
   return (
-    <div className="space-y-12">
+    <ContentWithRails maxWidthClass="max-w-5xl 2xl:max-w-6xl">
       <SeoHead
         title="OmniMetrics Hub | Precision Financial, E-Commerce & Business Calculators"
         description="Free high-precision financial calculators for founders, freelancers, and marketers. Calculate payment gateway fees, profit margins, break-even point, ROAS, freelance rates, and loan EMI."
@@ -70,59 +71,58 @@ export const HomePage: React.FC<Props> = ({
         canonicalPath="/"
       />
 
-      {/* Hero Section */}
-      <Hero
-        selectedCategory={selectedCategory}
-        onSelectCategory={onSelectCategory}
-        language={language}
-      />
+      <div className="space-y-12">
+        {/* Hero Section */}
+        <Hero
+          selectedCategory={selectedCategory}
+          onSelectCategory={onSelectCategory}
+          language={language}
+        />
 
-      {/* Leaderboard Ad Placement (Slot 1) */}
-      <AdSlot position="leaderboard" />
+        {/* Top Header Leaderboard Ad */}
+        <AdSlot position="leaderboard" />
 
-      {/* Calculators Grid */}
-      <section id="tools-grid" className="scroll-mt-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTools.map((tool, index) => (
-            <React.Fragment key={tool.id}>
-              <ToolCard tool={tool} onLaunch={onLaunchTool} />
-              {/* In-Grid Ad Slot (Slot 2) */}
-              {index === 2 && <AdSlot position="in-grid" />}
-            </React.Fragment>
-          ))}
+        {/* Calculators Grid */}
+        <section id="tools-grid" className="scroll-mt-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredTools.map((tool, index) => (
+              <React.Fragment key={tool.id}>
+                <ToolCard tool={tool} onLaunch={onLaunchTool} />
+                {/* Native In-Grid Ad Slot */}
+                {index === 2 && <AdSlot position="in-grid" />}
+              </React.Fragment>
+            ))}
 
-          {filteredTools.length === 0 && (
-            <div className="col-span-full text-center py-16 bg-white rounded-3xl border border-slate-200 p-8">
-              <p className="text-sm font-bold text-slate-700">{t.noResults}</p>
-              <button
-                type="button"
-                onClick={onResetSearch}
-                className="mt-3 px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition"
-              >
-                {t.clearFilters}
-              </button>
-            </div>
-          )}
-        </div>
-      </section>
+            {filteredTools.length === 0 && (
+              <div className="col-span-full text-center py-16 bg-white rounded-3xl border border-slate-200 p-8">
+                <p className="text-sm font-bold text-slate-700">{t.noResults}</p>
+                <button
+                  type="button"
+                  onClick={onResetSearch}
+                  className="mt-3 px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition cursor-pointer"
+                >
+                  {t.clearFilters}
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
 
-      {/* Value Propositions (3 Clean Trust Cards) */}
-      <ValueProps />
+        {/* Value Propositions (3 Clean Trust Cards) */}
+        <ValueProps />
 
-      {/* Complete Guide to Financial Calculations */}
-      <CompleteGuideSection onOpenCalculator={onOpenToolById} />
+        {/* Complete Guide to Financial Calculations */}
+        <CompleteGuideSection onOpenCalculator={onOpenToolById} />
 
-      {/* Mid-Page Horizontal Ad Placement (Slot 3) */}
-      <AdSlot position="mid-page" />
+        {/* Financial Guides & Knowledge Base */}
+        <KnowledgeSection onSelectArticle={onSelectArticle} language={language} />
 
-      {/* Financial Guides & Knowledge Base */}
-      <KnowledgeSection onSelectArticle={onSelectArticle} language={language} />
+        {/* Frequently Asked Questions */}
+        <FaqSection language={language} />
 
-      {/* Frequently Asked Questions */}
-      <FaqSection language={language} />
-
-      {/* Bottom Horizontal Ad Placement (Slot 4) */}
-      <AdSlot position="bottom" />
-    </div>
+        {/* Bottom Ad Placement */}
+        <AdSlot position="bottom" />
+      </div>
+    </ContentWithRails>
   );
 };

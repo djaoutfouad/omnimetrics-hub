@@ -16,17 +16,17 @@ export const LandedCostCalc: React.FC<Props> = ({ currency }) => {
   const [targetMargin, setTargetMargin] = useState<number>(50.0);
   const [copied, setCopied] = useState(false);
 
-  const safeUnitCost = Math.max(0, unitCost || 0);
-  const safeFreight = Math.max(0, freightPerUnit || 0);
-  const safeTariff = Math.max(0, tariffPercent || 0);
-  const safePackaging = Math.max(0, packagingPerUnit || 0);
-  const safeFeePercent = Math.max(0, paymentFeePercent || 0);
-  const safeFeeFixed = Math.max(0, paymentFeeFixed || 0);
-  const safeTargetMargin = Math.max(0, targetMargin || 0);
+  const safeUnitCost = Number.isFinite(unitCost) ? Math.max(0, unitCost) : 0;
+  const safeFreight = Number.isFinite(freightPerUnit) ? Math.max(0, freightPerUnit) : 0;
+  const safeTariff = Number.isFinite(tariffPercent) ? Math.max(0, tariffPercent) : 0;
+  const safePackaging = Number.isFinite(packagingPerUnit) ? Math.max(0, packagingPerUnit) : 0;
+  const safeFeePercent = Number.isFinite(paymentFeePercent) ? Math.max(0, paymentFeePercent) : 0;
+  const safeFeeFixed = Number.isFinite(paymentFeeFixed) ? Math.max(0, paymentFeeFixed) : 0;
+  const safeTargetMargin = Number.isFinite(targetMargin) ? Math.max(0, targetMargin) : 0;
 
   // Calculations
-  const tariffCost = safeUnitCost * (safeTariff / 100);
-  const totalLandedCost = safeUnitCost + safeFreight + tariffCost + safePackaging;
+  const tariffCost = Number.isFinite(safeUnitCost * (safeTariff / 100)) ? safeUnitCost * (safeTariff / 100) : 0;
+  const totalLandedCost = Number.isFinite(safeUnitCost + safeFreight + tariffCost + safePackaging) ? safeUnitCost + safeFreight + tariffCost + safePackaging : 0;
 
   const feeRate = safeFeePercent / 100;
   const marginRate = safeTargetMargin / 100;
@@ -34,15 +34,15 @@ export const LandedCostCalc: React.FC<Props> = ({ currency }) => {
   // Selling Price P such that P - Fee(P) - LandedCost = P * MarginRate
   const denominator = 1 - feeRate - marginRate;
   const isPricingSolvable = denominator > 0;
-  const recommendedPrice = isPricingSolvable ? (totalLandedCost + safeFeeFixed) / denominator : 0;
+  const recommendedPrice = isPricingSolvable && Number.isFinite((totalLandedCost + safeFeeFixed) / denominator) ? (totalLandedCost + safeFeeFixed) / denominator : 0;
 
-  const paymentFeeTotal = (recommendedPrice * feeRate) + safeFeeFixed;
-  const netProfitPerUnit = Math.max(0, recommendedPrice - totalLandedCost - paymentFeeTotal);
-  const markupPercent = totalLandedCost > 0 ? ((recommendedPrice - totalLandedCost) / totalLandedCost) * 100 : 0;
+  const paymentFeeTotal = Number.isFinite((recommendedPrice * feeRate) + safeFeeFixed) ? (recommendedPrice * feeRate) + safeFeeFixed : 0;
+  const netProfitPerUnit = Number.isFinite(recommendedPrice - totalLandedCost - paymentFeeTotal) ? Math.max(0, recommendedPrice - totalLandedCost - paymentFeeTotal) : 0;
+  const markupPercent = totalLandedCost > 0 && Number.isFinite(((recommendedPrice - totalLandedCost) / totalLandedCost) * 100) ? ((recommendedPrice - totalLandedCost) / totalLandedCost) * 100 : 0;
 
   // Break-even price (margin = 0%)
   const breakEvenDenominator = 1 - feeRate;
-  const breakEvenPrice = breakEvenDenominator > 0 ? (totalLandedCost + safeFeeFixed) / breakEvenDenominator : 0;
+  const breakEvenPrice = breakEvenDenominator > 0 && Number.isFinite((totalLandedCost + safeFeeFixed) / breakEvenDenominator) ? (totalLandedCost + safeFeeFixed) / breakEvenDenominator : 0;
 
   const handleCopy = () => {
     const text = `E-Commerce Landed Cost & Pricing Summary:\n- Manufacturing Cost: ${currency}${safeUnitCost.toFixed(2)}\n- Freight/Unit: ${currency}${safeFreight.toFixed(2)} | Tariff (${safeTariff}%): ${currency}${tariffCost.toFixed(2)} | Packaging: ${currency}${safePackaging.toFixed(2)}\n- Total Landed Cost per Unit: ${currency}${totalLandedCost.toFixed(2)}\n- Recommended Retail Price (${safeTargetMargin}% Margin): ${currency}${recommendedPrice.toFixed(2)}\n- Payment Processor Fee: ${currency}${paymentFeeTotal.toFixed(2)}\n- Net Profit per Unit: ${currency}${netProfitPerUnit.toFixed(2)} (Markup: ${markupPercent.toFixed(1)}%)\n- Minimum Break-Even Price: ${currency}${breakEvenPrice.toFixed(2)}`;

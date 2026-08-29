@@ -12,16 +12,16 @@ export const BreakEvenCalc: React.FC<Props> = ({ currency }) => {
   const [variableCost, setVariableCost] = useState<number>(20);
   const [copied, setCopied] = useState(false);
 
-  const safeFixedCosts = Math.max(0, fixedCosts || 0);
-  const safeUnitPrice = Math.max(0, unitPrice || 0);
-  const safeVariableCost = Math.max(0, variableCost || 0);
+  const safeFixedCosts = Number.isFinite(fixedCosts) ? Math.max(0, fixedCosts) : 0;
+  const safeUnitPrice = Number.isFinite(unitPrice) ? Math.max(0, unitPrice) : 0;
+  const safeVariableCost = Number.isFinite(variableCost) ? Math.max(0, variableCost) : 0;
 
   const contributionMargin = safeUnitPrice - safeVariableCost;
   const isViable = contributionMargin > 0;
-  const contributionRatio = safeUnitPrice > 0 ? (contributionMargin / safeUnitPrice) * 100 : 0;
-  const breakEvenUnits = isViable ? Math.ceil(safeFixedCosts / contributionMargin) : 0;
-  const breakEvenRevenue = breakEvenUnits * safeUnitPrice;
-  const safetyBufferUnits = Math.ceil(breakEvenUnits * 1.25); // 25% safety margin
+  const contributionRatio = safeUnitPrice > 0 && Number.isFinite((contributionMargin / safeUnitPrice) * 100) ? (contributionMargin / safeUnitPrice) * 100 : 0;
+  const breakEvenUnits = isViable && Number.isFinite(safeFixedCosts / contributionMargin) ? Math.ceil(safeFixedCosts / contributionMargin) : 0;
+  const breakEvenRevenue = Number.isFinite(breakEvenUnits * safeUnitPrice) ? breakEvenUnits * safeUnitPrice : 0;
+  const safetyBufferUnits = Number.isFinite(breakEvenUnits * 1.25) ? Math.ceil(breakEvenUnits * 1.25) : 0; // 25% safety margin
 
   const handleCopy = () => {
     const text = `Break-Even Analysis:\n- Fixed Costs: ${currency}${safeFixedCosts.toLocaleString()}\n- Unit Selling Price: ${currency}${safeUnitPrice.toFixed(2)}\n- Variable Cost / Unit: ${currency}${safeVariableCost.toFixed(2)}\n- Unit Contribution Margin: ${currency}${contributionMargin.toFixed(2)} (${contributionRatio.toFixed(1)}%)\n- Break-Even Units Target: ${breakEvenUnits.toLocaleString()} units\n- Break-Even Revenue Target: ${currency}${breakEvenRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;

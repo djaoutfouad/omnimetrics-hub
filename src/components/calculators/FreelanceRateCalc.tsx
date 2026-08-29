@@ -13,16 +13,16 @@ export const FreelanceRateCalc: React.FC<Props> = ({ currency }) => {
   const [billableHours, setBillableHours] = useState<number>(1000);
   const [copied, setCopied] = useState(false);
 
-  const safeTakeHome = Math.max(0, takeHome || 0);
-  const safeTaxes = Math.max(0, taxesAndBenefits || 0);
-  const safeExpenses = Math.max(0, expenses || 0);
-  const safeBillableHours = Math.max(1, billableHours || 1);
+  const safeTakeHome = Number.isFinite(takeHome) ? Math.max(0, takeHome) : 0;
+  const safeTaxes = Number.isFinite(taxesAndBenefits) ? Math.max(0, taxesAndBenefits) : 0;
+  const safeExpenses = Number.isFinite(expenses) ? Math.max(0, expenses) : 0;
+  const safeBillableHours = Number.isFinite(billableHours) ? Math.max(1, billableHours) : 1;
 
   const totalGrossRequired = safeTakeHome + safeTaxes + safeExpenses;
-  const hourlyRate = totalGrossRequired / safeBillableHours;
-  const dayRate = hourlyRate * 8;
-  const weeklyRate = hourlyRate * (safeBillableHours / 48); // 48 active billable weeks (4 weeks vacation/buffer)
-  const monthlyGross = totalGrossRequired / 12;
+  const hourlyRate = Number.isFinite(totalGrossRequired / safeBillableHours) ? totalGrossRequired / safeBillableHours : 0;
+  const dayRate = Number.isFinite(hourlyRate * 8) ? hourlyRate * 8 : 0;
+  const weeklyRate = Number.isFinite(hourlyRate * (safeBillableHours / 48)) ? hourlyRate * (safeBillableHours / 48) : 0; // 48 active billable weeks (4 weeks vacation/buffer)
+  const monthlyGross = Number.isFinite(totalGrossRequired / 12) ? totalGrossRequired / 12 : 0;
 
   const presets = [
     { label: 'Part-Time / Light (800 hrs)', hrs: 800 },
