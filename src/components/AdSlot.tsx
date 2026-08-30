@@ -80,7 +80,7 @@ export const AdSlot: React.FC<Props> = ({ position, className = '', slotLabel })
         return {
           title: 'Advertisement',
           dims: 'Responsive Display Unit',
-          type: 'AdSense Compliant Placement',
+          type: 'Advertisement',
           minH: 'min-h-[90px]',
           containerClass: 'w-full max-w-4xl p-3.5 my-6',
         };
@@ -114,7 +114,7 @@ export const AdSlot: React.FC<Props> = ({ position, className = '', slotLabel })
           </div>
           <div className="space-y-1 px-1 text-center">
             <div className="text-[11px] font-bold text-slate-700 leading-snug">
-              Google AdSense Ready
+              ADVERTISEMENT
             </div>
             <p className="text-[10px] text-slate-400 leading-relaxed">
               Standard IAB skyscraper placement unit for desktop viewports.
@@ -153,12 +153,12 @@ export const AdSlot: React.FC<Props> = ({ position, className = '', slotLabel })
             {details.dims}
           </div>
           <p className="text-[11px] text-slate-400 leading-relaxed">
-            Reserved space for compliant Google AdSense display unit
+            ADVERTISEMENT
           </p>
         </div>
 
         <div className="w-full pt-3 border-t border-dashed border-slate-200 text-[10px] font-medium text-slate-400 flex justify-center items-center">
-          <span>Google AdSense Ready</span>
+          <span>ADVERTISEMENT</span>
         </div>
       </div>
     );
@@ -183,7 +183,7 @@ export const AdSlot: React.FC<Props> = ({ position, className = '', slotLabel })
         {details.dims}
       </span>
       <span className="text-[10px] text-slate-400 font-medium mt-0.5">
-        Google AdSense compliant display slot (space reserved to prevent layout shift)
+        ADVERTISEMENT
       </span>
     </div>
   );

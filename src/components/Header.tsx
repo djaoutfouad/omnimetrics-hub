@@ -1,14 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { CurrencySymbol, LanguageCode } from '../types';
-import { TRANSLATIONS, LANGUAGE_OPTIONS } from '../data/translations';
-import { Search, CheckCircle, ArrowUpRight, ChevronDown, Check } from 'lucide-react';
+import { TRANSLATIONS } from '../data/translations';
+import { Search, CheckCircle, ArrowUpRight } from 'lucide-react';
 
 interface Props {
   currency: CurrencySymbol;
   onCurrencyChange: (c: CurrencySymbol) => void;
-  language: LanguageCode;
-  onLanguageChange: (l: LanguageCode) => void;
+  language?: LanguageCode;
+  onLanguageChange?: (l: LanguageCode) => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
   onReset: () => void;
@@ -18,28 +18,13 @@ interface Props {
 export const Header: React.FC<Props> = ({
   currency,
   onCurrencyChange,
-  language,
-  onLanguageChange,
+  language = 'US',
   searchQuery,
   onSearchChange,
   onReset,
   onOpenContact,
 }) => {
-  const [isLangOpen, setIsLangOpen] = useState(false);
-  const langDropdownRef = useRef<HTMLDivElement>(null);
   const t = TRANSLATIONS[language] || TRANSLATIONS.US;
-
-  const currentOption = LANGUAGE_OPTIONS.find((opt) => opt.code === language) || LANGUAGE_OPTIONS[0];
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (langDropdownRef.current && !langDropdownRef.current.contains(event.target as Node)) {
-        setIsLangOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   return (
     <header className="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 transition-all">
@@ -103,59 +88,8 @@ export const Header: React.FC<Props> = ({
           </div>
         </div>
 
-        {/* LANGUAGE, CURRENCY & CTA */}
+        {/* CURRENCY & CTA */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 text-xs font-semibold text-slate-700 shrink-0">
-          {/* Custom Floating Language Dropdown Card */}
-          <div className="relative" ref={langDropdownRef}>
-            <button
-              type="button"
-              onClick={() => setIsLangOpen(!isLangOpen)}
-              className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200/90 px-3 py-1.5 rounded-xl text-slate-800 text-xs font-bold transition shadow-2xs border border-slate-200/60"
-            >
-              <span className="text-[13px]">{currentOption.flag}</span>
-              <span className="font-extrabold text-[11px] text-slate-500">{currentOption.countryCode}</span>
-              <span className="hidden sm:inline font-bold">{currentOption.name}</span>
-              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isLangOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            {isLangOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-slate-200/90 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
-                <div className="px-3 py-1 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider border-b border-slate-100 mb-1">
-                  Select Language
-                </div>
-                <div className="max-h-64 overflow-y-auto space-y-0.5 px-1">
-                  {LANGUAGE_OPTIONS.map((opt) => {
-                    const isSelected = language === opt.code;
-                    return (
-                      <button
-                        key={opt.code}
-                        type="button"
-                        onClick={() => {
-                          onLanguageChange(opt.code);
-                          setIsLangOpen(false);
-                        }}
-                        className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium transition ${
-                          isSelected
-                            ? 'bg-emerald-50 text-emerald-800 font-bold'
-                            : 'text-slate-700 hover:bg-slate-100'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm">{opt.flag}</span>
-                          <span className="font-extrabold text-[10px] text-slate-400 px-1 py-0.5 bg-slate-100 rounded">
-                            {opt.countryCode}
-                          </span>
-                          <span className="text-slate-800">{opt.name}</span>
-                        </div>
-                        {isSelected && <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-
           {/* Currency Selector */}
           <select
             value={currency}

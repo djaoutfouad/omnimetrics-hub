@@ -160,7 +160,7 @@ export const LegalPage: React.FC = () => {
                   <span>1. Information We Do NOT Collect</span>
                 </h2>
                 <p>
-                  When you use any of the 12 calculators on OmniMetrics Hub (such as Payment Gateway Fees, Profit Margins, Break-Even, ROAS, Freelance Rates, Loan EMI, Compound Interest, or Salary Tax), your computational inputs and results are processed exclusively in your device’s local JavaScript runtime.
+                  When you use any of the 12 calculators on OmniMetrics Hub (such as Payment Gateway Fees, Profit Margins, Break-Even, ROAS, Freelance Rates, Loan EMI, Compound Interest, or Salary Tax), your computational inputs and results are processed exclusively in your device’s local JavaScript runtime. Contact Form submissions are sent securely via EmailJS solely to answer user inquiries.
                 </p>
                 <ul className="list-disc pl-5 space-y-1 text-slate-600">
                   <li>We do not record your revenues, invoice amounts, profit margins, or ad spend figures.</li>
