@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
-import { CurrencySymbol, CategoryType, ToolItem, ArticleItem, LanguageCode } from '../types';
+import { CurrencySymbol, CategoryType, ToolItem, ArticleItem } from '../types';
 import { TOOLS_DATA } from '../data/tools';
-import { TRANSLATIONS } from '../data/translations';
 import { Hero } from '../components/Hero';
 import { ToolCard } from '../components/ToolCard';
 import { ValueProps } from '../components/ValueProps';
@@ -14,7 +13,6 @@ import { SeoHead } from '../components/SeoHead';
 
 interface Props {
   currency: CurrencySymbol;
-  language: LanguageCode;
   selectedCategory: CategoryType;
   onSelectCategory: (cat: CategoryType) => void;
   searchQuery: string;
@@ -25,7 +23,6 @@ interface Props {
 }
 
 export const HomePage: React.FC<Props> = ({
-  language,
   selectedCategory,
   onSelectCategory,
   searchQuery,
@@ -34,8 +31,6 @@ export const HomePage: React.FC<Props> = ({
   onSelectArticle,
   onOpenToolById,
 }) => {
-  const t = TRANSLATIONS[language] || TRANSLATIONS.US;
-
   // Filtered tools
   const filteredTools = useMemo(() => {
     return TOOLS_DATA.filter((tool) => {
@@ -76,7 +71,6 @@ export const HomePage: React.FC<Props> = ({
         <Hero
           selectedCategory={selectedCategory}
           onSelectCategory={onSelectCategory}
-          language={language}
         />
 
         {/* Top Header Leaderboard Ad */}
@@ -95,13 +89,13 @@ export const HomePage: React.FC<Props> = ({
 
             {filteredTools.length === 0 && (
               <div className="col-span-full text-center py-16 bg-white rounded-3xl border border-slate-200 p-8">
-                <p className="text-sm font-bold text-slate-700">{t.noResults}</p>
+                <p className="text-sm font-bold text-slate-700">No calculators found matching your search.</p>
                 <button
                   type="button"
                   onClick={onResetSearch}
                   className="mt-3 px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition cursor-pointer"
                 >
-                  {t.clearFilters}
+                  Clear Search Filters
                 </button>
               </div>
             )}
@@ -115,10 +109,10 @@ export const HomePage: React.FC<Props> = ({
         <CompleteGuideSection onOpenCalculator={onOpenToolById} />
 
         {/* Financial Guides & Knowledge Base */}
-        <KnowledgeSection onSelectArticle={onSelectArticle} language={language} />
+        <KnowledgeSection onSelectArticle={onSelectArticle} />
 
         {/* Frequently Asked Questions */}
-        <FaqSection language={language} />
+        <FaqSection />
 
         {/* Bottom Ad Placement */}
         <AdSlot position="bottom" />

@@ -9,23 +9,6 @@ export type CategoryType =
 
 export type CurrencySymbol = '$' | '€' | '£' | 'C$' | 'A$' | '¥' | '₹';
 
-export type LanguageCode =
-  | 'US'
-  | 'ES'
-  | 'DE'
-  | 'FR'
-  | 'BR'
-  | 'IT'
-  | 'PL'
-  | 'NL';
-
-export interface LanguageOption {
-  code: LanguageCode;
-  countryCode: string;
-  name: string;
-  flag: string;
-}
-
 export interface ToolFaq {
   q: string;
   a: string;

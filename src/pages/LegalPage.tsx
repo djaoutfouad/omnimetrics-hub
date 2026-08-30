@@ -205,9 +205,6 @@ export const LegalPage: React.FC = () => {
                       <code>omni_privacy_consent</code>: Remembers your interaction with our transparency notice (stores <code>'accepted'</code> or <code>'essential_only'</code>).
                     </li>
                     <li>
-                      <code>omni_preferred_language</code>: Remembers your selected interface language preference (e.g. English, Spanish, German, French, etc.).
-                    </li>
-                    <li>
                       <code>omni_preferred_currency</code>: Remembers your active currency symbol preference across calculators.
                     </li>
                   </ul>

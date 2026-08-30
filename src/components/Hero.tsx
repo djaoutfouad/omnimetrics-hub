@@ -1,11 +1,9 @@
 import React from 'react';
-import { CategoryType, LanguageCode } from '../types';
-import { TRANSLATIONS } from '../data/translations';
+import { CategoryType } from '../types';
 
 interface Props {
   selectedCategory: CategoryType;
   onSelectCategory: (cat: CategoryType) => void;
-  language: LanguageCode;
 }
 
 const CATEGORIES: { label: string; value: CategoryType }[] = [
@@ -18,19 +16,17 @@ const CATEGORIES: { label: string; value: CategoryType }[] = [
   { label: 'PAYROLL', value: 'PAYROLL' },
 ];
 
-export const Hero: React.FC<Props> = ({ selectedCategory, onSelectCategory, language }) => {
-  const t = TRANSLATIONS[language];
-
+export const Hero: React.FC<Props> = ({ selectedCategory, onSelectCategory }) => {
   return (
     <section className="text-center max-w-3xl mx-auto mb-8 pt-2">
       <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-[1.15] mb-3">
-        {t.heroHeadline}{' '}
+        Instant clarity for every{' '}
         <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600">
-          {t.heroHeadlineHighlight}
+          financial decision
         </span>
       </h1>
       <p className="text-slate-500 text-sm sm:text-base font-medium max-w-xl mx-auto leading-relaxed mb-8">
-        {t.heroSubtitle}
+        12 real-time calculators for freelancers, founders, and digital marketers — no spreadsheets or signups required.
       </p>
 
       {/* Category Filter Pills */}
@@ -48,7 +44,7 @@ export const Hero: React.FC<Props> = ({ selectedCategory, onSelectCategory, lang
                   : 'bg-white hover:bg-slate-100/80 text-slate-600 border border-slate-200'
               }`}
             >
-              {cat.value === 'ALL' ? t.allTools : cat.label}
+              {cat.label}
             </button>
           );
         })}

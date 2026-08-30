@@ -1,14 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CurrencySymbol, LanguageCode } from '../types';
-import { TRANSLATIONS } from '../data/translations';
+import { CurrencySymbol } from '../types';
 import { Search, CheckCircle, ArrowUpRight } from 'lucide-react';
 
 interface Props {
   currency: CurrencySymbol;
   onCurrencyChange: (c: CurrencySymbol) => void;
-  language?: LanguageCode;
-  onLanguageChange?: (l: LanguageCode) => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
   onReset: () => void;
@@ -18,14 +15,11 @@ interface Props {
 export const Header: React.FC<Props> = ({
   currency,
   onCurrencyChange,
-  language = 'US',
   searchQuery,
   onSearchChange,
   onReset,
   onOpenContact,
 }) => {
-  const t = TRANSLATIONS[language] || TRANSLATIONS.US;
-
   return (
     <header className="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-4">
@@ -39,16 +33,16 @@ export const Header: React.FC<Props> = ({
           </div>
           <div>
             <div className="font-extrabold text-[15px] text-slate-900 tracking-tight leading-none flex items-center gap-1">
-              {t.appName}
+              OmniMetrics <span className="text-emerald-600">Hub</span>
             </div>
-            <div className="text-[11px] text-slate-400 font-medium">{t.appSubtitle}</div>
+            <div className="text-[11px] text-slate-400 font-medium">Finance & Decision Tools</div>
           </div>
         </div>
 
         {/* 2026 BADGE */}
         <div className="hidden xl:flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 shrink-0">
           <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
-          {t.badge2026}
+          Updated for 2026 Financial & Tax Formulas
         </div>
 
         {/* PRIMARY NAV LINKS */}
@@ -82,7 +76,7 @@ export const Header: React.FC<Props> = ({
               id="header-search"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder={t.searchPlaceholder}
+              placeholder="Search calculators (e.g. fees, margin, roas, loan)..."
               className="w-full pl-9 pr-4 py-1.5 bg-slate-100/90 text-xs rounded-full border-0 focus:ring-2 focus:ring-emerald-500 outline-none text-slate-700 font-medium transition placeholder:text-slate-400"
             />
           </div>
@@ -112,7 +106,7 @@ export const Header: React.FC<Props> = ({
             onClick={onOpenContact}
             className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 sm:px-4 py-1.5 rounded-full transition shadow-xs flex items-center gap-1"
           >
-            <span>{t.contactBtn}</span>
+            <span>Contact</span>
             <ArrowUpRight className="w-3 h-3 hidden sm:inline" />
           </button>
         </div>

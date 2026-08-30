@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { CurrencySymbol, CategoryType, ToolItem, ArticleItem, LanguageCode } from './types';
+import { CurrencySymbol, CategoryType, ToolItem, ArticleItem } from './types';
 import { TOOLS_DATA } from './data/tools';
-import { LANGUAGE_OPTIONS } from './data/translations';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { FloatingActionButton } from './components/FloatingActionButton';
@@ -45,20 +44,6 @@ export default function App() {
     return '$';
   });
 
-  const [language, setLanguage] = useState<LanguageCode>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('omni_preferred_language') as LanguageCode;
-        if (saved && LANGUAGE_OPTIONS.some((opt) => opt.code === saved)) {
-          return saved;
-        }
-      } catch {
-        // ignore
-      }
-    }
-    return 'US';
-  });
-
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -67,17 +52,6 @@ export default function App() {
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem('omni_preferred_currency', c);
-      } catch {
-        // ignore
-      }
-    }
-  };
-
-  const handleLanguageChange = (lang: LanguageCode) => {
-    setLanguage(lang);
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem('omni_preferred_language', lang);
       } catch {
         // ignore
       }
@@ -113,8 +87,6 @@ export default function App() {
       <Header
         currency={currency}
         onCurrencyChange={handleCurrencyChange}
-        language={language}
-        onLanguageChange={handleLanguageChange}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onReset={handleReset}
@@ -130,7 +102,6 @@ export default function App() {
               element={
                 <HomePage
                   currency={currency}
-                  language={language}
                   selectedCategory={selectedCategory}
                   onSelectCategory={setSelectedCategory}
                   searchQuery={searchQuery}

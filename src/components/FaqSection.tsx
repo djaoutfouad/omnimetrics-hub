@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
 import { FAQS_DATA } from '../data/faqs';
-import { LanguageCode } from '../types';
-import { TRANSLATIONS } from '../data/translations';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 
-interface Props {
-  language: LanguageCode;
-}
-
-export const FaqSection: React.FC<Props> = ({ language }) => {
+export const FaqSection: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const t = TRANSLATIONS[language];
 
   const toggleIndex = (idx: number) => {
     setOpenIndex(openIndex === idx ? null : idx);
@@ -24,10 +17,10 @@ export const FaqSection: React.FC<Props> = ({ language }) => {
           HELP & FORMULAS
         </span>
         <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-          {t.faqTitle}
+          Frequently Asked Questions
         </h2>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          {t.faqSubtitle}
+          Clear answers regarding calculation accuracy, client-side data security, and formulas.
         </p>
       </div>
 

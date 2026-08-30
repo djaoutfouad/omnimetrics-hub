@@ -101,7 +101,7 @@ export const LegalModal: React.FC<Props> = ({ initialTab, onClose }) => {
 
             <h4 className="font-bold text-slate-900 text-xs mt-3">2. Local Storage</h4>
             <p>
-              We use <code>localStorage</code> exclusively for essential interface preferences (such as remembering your consent status via <code>omni_privacy_consent</code>, language via <code>omni_preferred_language</code>, and currency via <code>omni_preferred_currency</code>). We do not deploy tracking pixels or marketing beacons.
+              We use <code>localStorage</code> exclusively for essential interface preferences (such as remembering your consent status via <code>omni_privacy_consent</code> and currency via <code>omni_preferred_currency</code>). We do not deploy tracking pixels or marketing beacons.
             </p>
 
             <h4 className="font-bold text-slate-900 text-xs mt-3">3. Advertising Notice</h4>

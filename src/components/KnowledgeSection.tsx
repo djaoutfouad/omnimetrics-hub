@@ -1,18 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ARTICLES_DATA } from '../data/articles';
-import { ArticleItem, LanguageCode } from '../types';
-import { TRANSLATIONS } from '../data/translations';
+import { ArticleItem } from '../types';
 import { Clock, ArrowRight, BookOpen } from 'lucide-react';
 
 interface Props {
   onSelectArticle: (article: ArticleItem) => void;
-  language: LanguageCode;
 }
 
-export const KnowledgeSection: React.FC<Props> = ({ onSelectArticle, language }) => {
-  const t = TRANSLATIONS[language] || TRANSLATIONS.US;
-
+export const KnowledgeSection: React.FC<Props> = ({ onSelectArticle }) => {
   return (
     <section id="blog-section" className="mb-14 pt-10 border-t border-slate-200">
       <div className="text-center max-w-2xl mx-auto mb-10">
@@ -21,10 +17,10 @@ export const KnowledgeSection: React.FC<Props> = ({ onSelectArticle, language })
           KNOWLEDGE BASE
         </span>
         <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-3 tracking-tight">
-          {t.knowledgeBaseTitle}
+          Financial Guides & Merchant Insights
         </h2>
         <p className="text-xs sm:text-sm text-slate-500 mt-1.5">
-          {t.knowledgeBaseSubtitle}
+          Actionable mathematical breakdowns written for modern e-commerce founders and independent consultants.
         </p>
       </div>
 
@@ -68,7 +64,7 @@ export const KnowledgeSection: React.FC<Props> = ({ onSelectArticle, language })
                 to={`/guides/${article.slug || article.id}`}
                 className="text-xs font-bold text-emerald-600 group-hover:text-emerald-700 flex items-center gap-1 transition"
               >
-                <span>{t.readGuide}</span>
+                <span>Read full guide</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
               </Link>
             </div>
