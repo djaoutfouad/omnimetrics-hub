@@ -42,7 +42,7 @@ export const Header: React.FC<Props> = ({
         {/* 2026 BADGE */}
         <div className="hidden xl:flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 shrink-0">
           <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
-          Updated for 2026 Financial & Tax Formulas
+          Updated for 2026 Financial & Business Models
         </div>
 
         {/* PRIMARY NAV LINKS */}

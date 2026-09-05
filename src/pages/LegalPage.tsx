@@ -225,10 +225,10 @@ export const LegalPage: React.FC = () => {
 
               <section className="space-y-3 pt-4 border-t border-slate-100">
                 <h2 className="text-base font-extrabold text-slate-900">
-                  5. External Content Delivery Networks (CDNs) & Hosting Infrastructure
+                  5. External Content Delivery Networks (CDNs) & Web Fonts
                 </h2>
-                <p>
-                  To ensure high speed, global asset availability, and data security, OmniMetrics Hub utilizes trusted external Content Delivery Networks (CDNs):
+                <p className="text-xs sm:text-[13px] text-slate-600 leading-relaxed">
+                  To maintain rapid global loading speeds and consistent typography, OmniMetrics Hub serves assets via reputable Content Delivery Networks, including Google Fonts and Unsplash CDN. When your browser requests these resources, standard technical connection data (such as your IP address and browser user-agent) is processed strictly to fulfill the HTTP transmission. No personal calculation inputs, financial figures, or confidential metrics are ever shared with or stored by these infrastructure providers.
                 </p>
                 <ul className="list-disc pl-5 space-y-1.5 text-slate-600">
                   <li>

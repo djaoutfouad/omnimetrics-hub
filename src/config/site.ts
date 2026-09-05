@@ -5,7 +5,7 @@
  */
 export const SITE_URL: string = (
   (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_SITE_URL) ||
-  'https://omnimetrics-hub.djaoutfouad19762321.workers.dev'
+  'https://omnimetricshub.com'
 ).replace(/\/+$/, '');
 
 export const SITE_CONFIG = {
