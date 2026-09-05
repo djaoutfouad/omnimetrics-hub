@@ -54,12 +54,13 @@ export const CompoundInterestCalc: React.FC<Props> = ({ currency }) => {
     <div className="space-y-5 text-slate-800">
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="ci-principal-input" className="text-xs font-bold text-slate-700 block mb-1">
             Initial Principal ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="ci-principal-input"
               type="number"
               min="0"
               step="any"
@@ -72,12 +73,13 @@ export const CompoundInterestCalc: React.FC<Props> = ({ currency }) => {
         </div>
 
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="ci-monthly-input" className="text-xs font-bold text-slate-700 block mb-1">
             Monthly Contribution ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="ci-monthly-input"
               type="number"
               min="0"
               step="any"
@@ -92,10 +94,11 @@ export const CompoundInterestCalc: React.FC<Props> = ({ currency }) => {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="ci-rate-input" className="text-xs font-bold text-slate-700 block mb-1">
             Annual Return Rate (%)
           </label>
           <input
+            id="ci-rate-input"
             type="number"
             min="0"
             max="40"
@@ -107,10 +110,11 @@ export const CompoundInterestCalc: React.FC<Props> = ({ currency }) => {
         </div>
 
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="ci-years-input" className="text-xs font-bold text-slate-700 block mb-1">
             Time Horizon (Years)
           </label>
           <input
+            id="ci-years-input"
             type="number"
             min="1"
             max="60"

@@ -99,14 +99,19 @@ export const LegalModal: React.FC<Props> = ({ initialTab, onClose }) => {
               When you send a message through our Contact form, your name, email, and message are securely transmitted via EmailJS directly to our support inbox ({SITE_CONFIG.contactEmail}) solely to respond to your inquiry. We never sell or share contact details with third-party data brokers.
             </p>
 
-            <h4 className="font-bold text-slate-900 text-xs mt-3">2. Local Storage</h4>
+            <h4 className="font-bold text-slate-900 text-xs mt-3">2. Local Storage & Client Cache</h4>
             <p>
-              We use <code>localStorage</code> exclusively for essential interface preferences (such as remembering your consent status via <code>omni_privacy_consent</code> and currency via <code>omni_preferred_currency</code>). We do not deploy tracking pixels or marketing beacons.
+              We use <code>localStorage</code> exclusively on your device for essential interface preferences: remembering your consent status via <code>omni_privacy_consent</code> and preferred currency via <code>omni_preferred_currency</code>. No advertising cookies, tracking pixels, or financial inputs are stored.
             </p>
 
-            <h4 className="font-bold text-slate-900 text-xs mt-3">3. Advertising Notice</h4>
+            <h4 className="font-bold text-slate-900 text-xs mt-3">3. External Content Delivery Networks (CDNs)</h4>
             <p>
-              Third-party advertising is not currently active. Any future advertising integration will comply with Google AdSense policies and include required consent management controls.
+              OmniMetrics Hub uses trusted CDNs to deliver assets efficiently: Google Fonts for web typography and Unsplash for editorial imagery. Standard technical headers (IP address and browser user-agent) are processed strictly to fulfill file delivery.
+            </p>
+
+            <h4 className="font-bold text-slate-900 text-xs mt-3">4. Advertising Notice</h4>
+            <p>
+              Third-party advertising is not currently active. Any future advertising integration will comply strictly with Google AdSense policies and include certified consent management controls.
             </p>
 
             <div className="pt-2">

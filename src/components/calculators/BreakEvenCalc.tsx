@@ -33,12 +33,13 @@ export const BreakEvenCalc: React.FC<Props> = ({ currency }) => {
   return (
     <div className="space-y-5 text-slate-800">
       <div>
-        <label className="text-xs font-bold text-slate-700 block mb-1">
+        <label htmlFor="be-fixed-costs-input" className="text-xs font-bold text-slate-700 block mb-1">
           Total Fixed Overhead Costs ({currency})
         </label>
         <div className="relative">
           <span className="absolute left-3.5 top-2.5 text-slate-400 font-bold text-sm">{currency}</span>
           <input
+            id="be-fixed-costs-input"
             type="number"
             min="0"
             step="any"
@@ -53,12 +54,13 @@ export const BreakEvenCalc: React.FC<Props> = ({ currency }) => {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="be-unit-price-input" className="text-xs font-bold text-slate-700 block mb-1">
             Selling Price / Unit ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="be-unit-price-input"
               type="number"
               min="0"
               step="any"
@@ -71,12 +73,13 @@ export const BreakEvenCalc: React.FC<Props> = ({ currency }) => {
         </div>
 
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="be-variable-cost-input" className="text-xs font-bold text-slate-700 block mb-1">
             Variable Cost / Unit ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="be-variable-cost-input"
               type="number"
               min="0"
               step="any"

@@ -36,7 +36,7 @@ export const ValueProps: React.FC = () => {
             Standard Banking Formulas
           </h3>
           <p className="text-xs text-slate-500 leading-relaxed">
-            Our engine mirrors the exact formulas used by global payment processors and financial institutions — Stripe and PayPal fee structures, standard IRS-aligned tax math, and textbook accounting definitions of margin, markup, and break-even.
+            Our engine mirrors published benchmark formulas used by global payment processors and standard accounting practices — Stripe and PayPal standard fee schedules, benchmark tax estimation math, and textbook definitions of margin, markup, and break-even.
           </p>
         </div>
 

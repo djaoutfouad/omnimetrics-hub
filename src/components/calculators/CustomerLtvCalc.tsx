@@ -33,12 +33,13 @@ export const CustomerLtvCalc: React.FC<Props> = ({ currency }) => {
   return (
     <div className="space-y-5 text-slate-800">
       <div>
-        <label className="text-xs font-bold text-slate-700 block mb-1">
+        <label htmlFor="ltv-aov-input" className="text-xs font-bold text-slate-700 block mb-1">
           Average Order Value (AOV) ({currency})
         </label>
         <div className="relative">
           <span className="absolute left-3.5 top-2.5 text-slate-400 font-bold text-sm">{currency}</span>
           <input
+            id="ltv-aov-input"
             type="number"
             min="0"
             step="any"
@@ -52,10 +53,11 @@ export const CustomerLtvCalc: React.FC<Props> = ({ currency }) => {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="ltv-freq-input" className="text-xs font-bold text-slate-700 block mb-1">
             Orders per Year
           </label>
           <input
+            id="ltv-freq-input"
             type="number"
             min="0.1"
             step="0.5"
@@ -67,10 +69,11 @@ export const CustomerLtvCalc: React.FC<Props> = ({ currency }) => {
         </div>
 
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="ltv-lifespan-input" className="text-xs font-bold text-slate-700 block mb-1">
             Customer Lifespan (Years)
           </label>
           <input
+            id="ltv-lifespan-input"
             type="number"
             min="0.1"
             step="0.5"
@@ -84,10 +87,11 @@ export const CustomerLtvCalc: React.FC<Props> = ({ currency }) => {
 
       <div>
         <div className="flex justify-between items-center mb-1">
-          <label className="text-xs font-bold text-slate-700">Gross Margin Percentage (%)</label>
+          <label htmlFor="ltv-margin-slider" className="text-xs font-bold text-slate-700">Gross Margin Percentage (%)</label>
           <span className="text-xs font-bold text-purple-700">{safeMargin}%</span>
         </div>
         <input
+          id="ltv-margin-slider"
           type="range"
           min="5"
           max="100"

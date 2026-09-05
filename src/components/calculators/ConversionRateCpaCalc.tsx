@@ -72,10 +72,11 @@ export const ConversionRateCpaCalc: React.FC<Props> = ({ currency }) => {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="cpa-visitors-input" className="text-xs font-bold text-slate-700 block mb-1">
             Total Unique Visitors / Clicks
           </label>
           <input
+            id="cpa-visitors-input"
             type="number"
             min="1"
             value={visitors === 0 ? '' : visitors}
@@ -86,10 +87,11 @@ export const ConversionRateCpaCalc: React.FC<Props> = ({ currency }) => {
         </div>
 
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="cpa-conversions-input" className="text-xs font-bold text-slate-700 block mb-1">
             Total Conversions / Orders
           </label>
           <input
+            id="cpa-conversions-input"
             type="number"
             min="0"
             value={conversions === 0 ? '' : conversions}
@@ -102,12 +104,13 @@ export const ConversionRateCpaCalc: React.FC<Props> = ({ currency }) => {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="cpa-adspend-input" className="text-xs font-bold text-slate-700 block mb-1">
             Total Ad Campaign Spend ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="cpa-adspend-input"
               type="number"
               min="0"
               step="any"
@@ -120,12 +123,13 @@ export const ConversionRateCpaCalc: React.FC<Props> = ({ currency }) => {
         </div>
 
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="cpa-aov-input" className="text-xs font-bold text-slate-700 block mb-1">
             Average Order Value (AOV) ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="cpa-aov-input"
               type="number"
               min="0"
               step="any"

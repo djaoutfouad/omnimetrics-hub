@@ -40,12 +40,13 @@ export const FreelanceRateCalc: React.FC<Props> = ({ currency }) => {
   return (
     <div className="space-y-5 text-slate-800">
       <div>
-        <label className="text-xs font-bold text-slate-700 block mb-1">
+        <label htmlFor="freelance-takehome-input" className="text-xs font-bold text-slate-700 block mb-1">
           Desired Annual Take-Home Income ({currency})
         </label>
         <div className="relative">
           <span className="absolute left-3.5 top-2.5 text-slate-400 font-bold text-sm">{currency}</span>
           <input
+            id="freelance-takehome-input"
             type="number"
             min="0"
             step="any"
@@ -59,12 +60,13 @@ export const FreelanceRateCalc: React.FC<Props> = ({ currency }) => {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="freelance-taxes-input" className="text-xs font-bold text-slate-700 block mb-1">
             Taxes & Self-Employed Healthcare ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="freelance-taxes-input"
               type="number"
               min="0"
               step="any"
@@ -77,12 +79,13 @@ export const FreelanceRateCalc: React.FC<Props> = ({ currency }) => {
         </div>
 
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="freelance-overhead-input" className="text-xs font-bold text-slate-700 block mb-1">
             Software & Business Overhead ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="freelance-overhead-input"
               type="number"
               min="0"
               step="any"
@@ -97,10 +100,11 @@ export const FreelanceRateCalc: React.FC<Props> = ({ currency }) => {
 
       <div>
         <div className="flex items-center justify-between mb-1">
-          <label className="text-xs font-bold text-slate-700">Annual Billable Hours Target</label>
+          <label htmlFor="freelance-hours-input" className="text-xs font-bold text-slate-700">Annual Billable Hours Target</label>
           <span className="text-[11px] text-slate-500 font-semibold">{safeBillableHours} hrs/yr (~{(safeBillableHours / 48).toFixed(1)} hrs/week)</span>
         </div>
         <input
+          id="freelance-hours-input"
           type="number"
           min="100"
           max="2500"

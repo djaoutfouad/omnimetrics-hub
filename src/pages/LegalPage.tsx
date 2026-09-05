@@ -193,30 +193,30 @@ export const LegalPage: React.FC = () => {
               <section className="space-y-3 pt-4 border-t border-slate-100">
                 <h2 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
                   <Globe className="w-4 h-4 text-indigo-600" />
-                  <span>3. Local Storage & Cookie Preferences</span>
+                  <span>3. Local Storage, Caching & Cookie Preferences</span>
                 </h2>
                 <p>
-                  OmniMetrics Hub does not deploy tracking pixels, third-party user fingerprinting, or invasive analytics cookies. We use browser <code>localStorage</code> solely for essential user preferences:
+                  OmniMetrics Hub does not deploy tracking pixels, third-party user fingerprinting, or invasive advertising cookies. Browser cache and <code>localStorage</code> are used exclusively on your local client device for core usability preferences:
                 </p>
                 <div className="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2 text-xs">
-                  <div className="font-bold text-slate-800">Local Storage Keys Used:</div>
+                  <div className="font-bold text-slate-800">Local Storage Keys Used (Client-Side Only):</div>
                   <ul className="list-disc pl-5 space-y-1 text-slate-600">
                     <li>
                       <code>omni_privacy_consent</code>: Remembers your interaction with our transparency notice (stores <code>'accepted'</code> or <code>'essential_only'</code>).
                     </li>
                     <li>
-                      <code>omni_preferred_currency</code>: Remembers your active currency symbol preference across calculators.
+                      <code>omni_preferred_currency</code>: Remembers your active currency symbol preference across all 12 calculators (e.g., $, €, £, C$, A$, ¥, ₹).
                     </li>
                   </ul>
                   <p className="text-slate-500 text-[11px]">
-                    You can clear this storage at any time through your browser settings without affecting the core mathematical calculators.
+                    No advertising trackers, personal profiles, or user financial entries are written to these keys. You can clear this storage at any time through your browser settings without affecting calculation capabilities.
                   </p>
                 </div>
               </section>
 
               <section className="space-y-3 pt-4 border-t border-slate-100">
                 <h2 className="text-base font-extrabold text-slate-900">
-                  4. Advertising Policy & Future Monetization
+                  4. Advertising Policy & Monetization Readiness
                 </h2>
                 <p>
                   Third-party advertising (such as Google AdSense) is <strong>not currently active</strong> on OmniMetrics Hub. In the future, to support the free availability and maintenance of our mathematical tools, we may implement non-intrusive, policy-compliant advertising. When activated, any advertising service and its associated cookie/consent requirements (including Google-certified Consent Management Platforms for GDPR/TCF v2.2 and CCPA compliance) will be fully disclosed in this Privacy Policy.
@@ -225,11 +225,22 @@ export const LegalPage: React.FC = () => {
 
               <section className="space-y-3 pt-4 border-t border-slate-100">
                 <h2 className="text-base font-extrabold text-slate-900">
-                  5. Server Logging & Hosting Infrastructure
+                  5. External Content Delivery Networks (CDNs) & Hosting Infrastructure
                 </h2>
                 <p>
-                  Like all web services, our global content delivery network (CDN) and hosting infrastructure (such as Cloudflare Pages) automatically record standard technical log data (including client IP addresses, browser user-agent strings, and request timestamps) strictly for technical routing, security monitoring, and DDoS defense. These logs are not combined with personal identifying information.
+                  To ensure high speed, global asset availability, and data security, OmniMetrics Hub utilizes trusted external Content Delivery Networks (CDNs):
                 </p>
+                <ul className="list-disc pl-5 space-y-1.5 text-slate-600">
+                  <li>
+                    <strong>Google Fonts (Google LLC):</strong> Serves typographic web fonts (such as Inter and Plus Jakarta Sans) to render interface text cleanly across devices. Requests to Google Fonts transmit standard technical headers (IP address and browser user-agent) required to serve the font files.
+                  </li>
+                  <li>
+                    <strong>Unsplash (Unsplash Inc.):</strong> Serves visual editorial imagery and professional persona visual assets. Image assets are loaded directly from Unsplash's global media CDN.
+                  </li>
+                  <li>
+                    <strong>Hosting & Edge CDN (e.g., Cloudflare Pages):</strong> Automatically processes standard technical HTTP server logs (client IP addresses, request timestamps, and user agents) strictly for technical network routing, edge caching, and DDoS mitigation. These technical logs are not tied to personal identities.
+                  </li>
+                </ul>
               </section>
 
               <section className="space-y-3 pt-4 border-t border-slate-100">

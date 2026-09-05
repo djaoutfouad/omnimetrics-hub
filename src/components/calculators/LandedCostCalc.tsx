@@ -55,12 +55,13 @@ export const LandedCostCalc: React.FC<Props> = ({ currency }) => {
     <div className="space-y-4 text-slate-800">
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="landed-unit-cost-input" className="text-xs font-bold text-slate-700 block mb-1">
             Manufacturing / FOB Cost ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="landed-unit-cost-input"
               type="number"
               min="0"
               step="any"
@@ -73,12 +74,13 @@ export const LandedCostCalc: React.FC<Props> = ({ currency }) => {
         </div>
 
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="landed-freight-input" className="text-xs font-bold text-slate-700 block mb-1">
             Freight & Shipping / Unit ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="landed-freight-input"
               type="number"
               min="0"
               step="any"
@@ -93,10 +95,11 @@ export const LandedCostCalc: React.FC<Props> = ({ currency }) => {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="landed-tariff-input" className="text-xs font-bold text-slate-700 block mb-1">
             Customs Duty / Tariff (%)
           </label>
           <input
+            id="landed-tariff-input"
             type="number"
             min="0"
             step="0.1"
@@ -107,12 +110,13 @@ export const LandedCostCalc: React.FC<Props> = ({ currency }) => {
         </div>
 
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="landed-packaging-input" className="text-xs font-bold text-slate-700 block mb-1">
             Packaging & Prep ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="landed-packaging-input"
               type="number"
               min="0"
               step="any"
@@ -127,10 +131,11 @@ export const LandedCostCalc: React.FC<Props> = ({ currency }) => {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="landed-margin-input" className="text-xs font-bold text-slate-700 block mb-1">
             Desired Profit Margin (%)
           </label>
           <input
+            id="landed-margin-input"
             type="number"
             min="1"
             max="95"
@@ -142,11 +147,12 @@ export const LandedCostCalc: React.FC<Props> = ({ currency }) => {
         </div>
 
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="landed-fee-percent-input" className="text-xs font-bold text-slate-700 block mb-1">
             Payment Processor Rate
           </label>
           <div className="flex gap-1.5">
             <input
+              id="landed-fee-percent-input"
               type="number"
               step="0.1"
               value={paymentFeePercent}
@@ -155,6 +161,8 @@ export const LandedCostCalc: React.FC<Props> = ({ currency }) => {
               placeholder="2.9%"
             />
             <input
+              id="landed-fee-fixed-input"
+              aria-label="Payment Processor Fixed Fee"
               type="number"
               step="0.05"
               value={paymentFeeFixed}
@@ -175,7 +183,7 @@ export const LandedCostCalc: React.FC<Props> = ({ currency }) => {
                 <div className="text-xs font-bold text-slate-300 flex items-center gap-1">
                   <Package className="w-3.5 h-3.5 text-emerald-400" /> Recommended Retail Price:
                 </div>
-                <div className="text-[11px] text-slate-400">Yields exact {safeTargetMargin}% margin after payment fees</div>
+                <div className="text-[11px] text-slate-400">Yields targeted {safeTargetMargin}% margin after payment fees</div>
               </div>
               <span className="font-black text-emerald-400 text-2xl tracking-tight">
                 {currency}{recommendedPrice.toFixed(2)}

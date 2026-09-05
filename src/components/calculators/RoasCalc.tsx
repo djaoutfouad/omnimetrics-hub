@@ -37,12 +37,13 @@ export const RoasCalc: React.FC<Props> = ({ currency }) => {
     <div className="space-y-5 text-slate-800">
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="roas-adspend-input" className="text-xs font-bold text-slate-700 block mb-1">
             Total Ad Spend ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="roas-adspend-input"
               type="number"
               min="0"
               step="any"
@@ -55,12 +56,13 @@ export const RoasCalc: React.FC<Props> = ({ currency }) => {
         </div>
 
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="roas-revenue-input" className="text-xs font-bold text-slate-700 block mb-1">
             Attributed Revenue ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="roas-revenue-input"
               type="number"
               min="0"
               step="any"
@@ -75,8 +77,9 @@ export const RoasCalc: React.FC<Props> = ({ currency }) => {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">Total Conversions / Orders</label>
+          <label htmlFor="roas-conversions-input" className="text-xs font-bold text-slate-700 block mb-1">Total Conversions / Orders</label>
           <input
+            id="roas-conversions-input"
             type="number"
             min="0"
             step="1"
@@ -87,10 +90,11 @@ export const RoasCalc: React.FC<Props> = ({ currency }) => {
           />
         </div>
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">Product COGS / Fulfillment ({currency})</label>
+          <label htmlFor="roas-cogs-input" className="text-xs font-bold text-slate-700 block mb-1">Product COGS / Fulfillment ({currency})</label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="roas-cogs-input"
               type="number"
               min="0"
               step="any"

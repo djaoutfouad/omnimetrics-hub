@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CurrencySymbol } from '../../types';
-import { Copy, Check, RefreshCw } from 'lucide-react';
+import { Copy, Check, RefreshCw, Info } from 'lucide-react';
 
 interface Props {
   currency: CurrencySymbol;
@@ -26,21 +26,22 @@ export const SalaryTaxCalc: React.FC<Props> = ({ currency }) => {
   const effectiveTaxPct = safeGross > 0 && Number.isFinite(((annualTax + annualDeductions) / safeGross) * 100) ? ((annualTax + annualDeductions) / safeGross) * 100 : 0;
 
   const handleCopy = () => {
-    const text = `Net Salary & Tax Payout Breakdown:\n- Gross Annual Salary: ${currency}${safeGross.toLocaleString()}\n- Estimated Tax Rate: ${safeTaxRate}%\n- Annual Taxes Withheld: ${currency}${annualTax.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n- Annual Other Deductions: ${currency}${annualDeductions.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n- Annual Net Take-Home: ${currency}${annualNet.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n- Monthly Net Take-Home: ${currency}${monthlyNet.toLocaleString('en-US', { minimumFractionDigits: 2 })} / mo\n- Bi-Weekly Net: ${currency}${biWeeklyNet.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    const text = `Net Salary & Tax Payout Breakdown:\n- Gross Annual Salary: ${currency}${safeGross.toLocaleString()}\n- Blended Effective Tax Rate: ${safeTaxRate}%\n- Annual Taxes Withheld: ${currency}${annualTax.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n- Annual Other Deductions: ${currency}${annualDeductions.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n- Annual Net Take-Home: ${currency}${annualNet.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n- Monthly Net Take-Home: ${currency}${monthlyNet.toLocaleString('en-US', { minimumFractionDigits: 2 })} / mo\n- Bi-Weekly Net: ${currency}${biWeeklyNet.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="space-y-5 text-slate-800">
+    <div className="space-y-4 text-slate-800">
       <div>
-        <label className="text-xs font-bold text-slate-700 block mb-1">
+        <label htmlFor="salary-gross-input" className="text-xs font-bold text-slate-700 block mb-1">
           Gross Annual Salary ({currency})
         </label>
         <div className="relative">
           <span className="absolute left-3.5 top-2.5 text-slate-400 font-bold text-sm">{currency}</span>
           <input
+            id="salary-gross-input"
             type="number"
             min="0"
             step="any"
@@ -54,10 +55,11 @@ export const SalaryTaxCalc: React.FC<Props> = ({ currency }) => {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
-            Estimated Effective Tax Rate (%)
+          <label htmlFor="salary-tax-rate-input" className="text-xs font-bold text-slate-700 block mb-1">
+            Blended Effective Tax Rate (%)
           </label>
           <input
+            id="salary-tax-rate-input"
             type="number"
             min="0"
             max="70"
@@ -66,15 +68,17 @@ export const SalaryTaxCalc: React.FC<Props> = ({ currency }) => {
             onChange={(e) => setTaxRate(parseFloat(e.target.value) || 0)}
             className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:ring-2 focus:ring-pink-500 text-sm"
           />
+          <span className="text-[10px] text-slate-400 mt-1 block">Blended average tax across brackets</span>
         </div>
 
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="salary-deductions-input" className="text-xs font-bold text-slate-700 block mb-1">
             Monthly Deductions / Benefits ({currency})
           </label>
           <div className="relative">
             <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
             <input
+              id="salary-deductions-input"
               type="number"
               min="0"
               step="any"
@@ -84,6 +88,15 @@ export const SalaryTaxCalc: React.FC<Props> = ({ currency }) => {
               className="w-full pl-7 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:ring-2 focus:ring-pink-500 text-sm"
             />
           </div>
+          <span className="text-[10px] text-slate-400 mt-1 block">Healthcare, 401(k), pre-tax savings</span>
+        </div>
+      </div>
+
+      {/* Tax Transparency Disclaimer Notice */}
+      <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-600 flex items-start gap-2">
+        <Info className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+        <div>
+          This calculator uses a single blended effective tax rate for quick budgeting. Actual take-home pay depends on progressive statutory tax brackets, local jurisdictions, and personal deductions.
         </div>
       </div>
 
@@ -131,7 +144,7 @@ export const SalaryTaxCalc: React.FC<Props> = ({ currency }) => {
             setTaxRate(22);
             setMonthlyDeductions(150);
           }}
-          className="text-xs text-slate-400 hover:text-slate-600 flex items-center gap-1 font-medium transition"
+          className="text-xs text-slate-400 hover:text-slate-600 flex items-center gap-1 font-medium transition cursor-pointer"
         >
           <RefreshCw className="w-3.5 h-3.5" /> Reset Defaults
         </button>

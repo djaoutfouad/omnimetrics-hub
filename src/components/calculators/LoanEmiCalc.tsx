@@ -48,12 +48,13 @@ export const LoanEmiCalc: React.FC<Props> = ({ currency }) => {
   return (
     <div className="space-y-4 text-slate-800">
       <div>
-        <label className="text-xs font-bold text-slate-700 block mb-1">
+        <label htmlFor="emi-amount-input" className="text-xs font-bold text-slate-700 block mb-1">
           Loan Principal Amount ({currency})
         </label>
         <div className="relative">
           <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
           <input
+            id="emi-amount-input"
             type="number"
             min="0"
             step="1000"
@@ -67,10 +68,11 @@ export const LoanEmiCalc: React.FC<Props> = ({ currency }) => {
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="emi-rate-input" className="text-xs font-bold text-slate-700 block mb-1">
             Annual Interest Rate (%)
           </label>
           <input
+            id="emi-rate-input"
             type="number"
             min="0"
             max="35"
@@ -82,10 +84,11 @@ export const LoanEmiCalc: React.FC<Props> = ({ currency }) => {
         </div>
 
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-1">
+          <label htmlFor="emi-years-input" className="text-xs font-bold text-slate-700 block mb-1">
             Loan Tenure (Years)
           </label>
           <input
+            id="emi-years-input"
             type="number"
             min="1"
             max="35"

@@ -31,7 +31,7 @@ export const CompleteGuideSection: React.FC<Props> = ({ onOpenCalculator }) => {
               </h3>
             </div>
             <p className="text-xs sm:text-[13px] text-slate-600 leading-relaxed">
-              When you sell online, the price a customer pays is not what lands in your account. Stripe and PayPal both charge a percentage plus a small fixed fee per transaction. Use the Payment Fees calculator to see the exact fee and net payout for any sale, or flip it around with the Reverse Invoice Target to find out what price to charge so you receive a specific amount after fees.
+              When you sell online, the price a customer pays is not what lands in your account. Stripe and PayPal both charge a percentage plus a small fixed fee per transaction. Use the Payment Fees calculator to see the estimated fee and projected net payout for any sale, or flip it around with the Reverse Invoice Target to calculate what benchmark price to charge so you receive a target amount after fees.
             </p>
           </div>
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
@@ -99,7 +99,7 @@ export const CompleteGuideSection: React.FC<Props> = ({ onOpenCalculator }) => {
               </h3>
             </div>
             <p className="text-xs sm:text-[13px] text-slate-600 leading-relaxed">
-              Before a product or service becomes profitable, it must first cover your fixed costs (rent, salaries, subscriptions) and variable costs (materials, per-unit fees). The Break-Even calculator tells you exactly how many units you need to sell — and the revenue that represents — before every additional sale becomes pure profit.
+              Before a product or service becomes profitable, it must first cover your fixed costs (rent, salaries, subscriptions) and variable costs (materials, per-unit fees). The Break-Even calculator estimates how many units you need to sell — and the revenue that represents — before every additional sale contributes to net profit.
             </p>
           </div>
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">

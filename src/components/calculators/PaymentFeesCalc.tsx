@@ -106,12 +106,13 @@ export const PaymentFeesCalc: React.FC<Props> = ({ currency }) => {
       <div className="space-y-3.5">
         {mode === 'forward' ? (
           <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">
+            <label htmlFor="pay-amount-input" className="text-xs font-bold text-slate-700 block mb-1">
               Invoice / Transaction Amount ({currency})
             </label>
             <div className="relative">
               <span className="absolute left-3.5 top-2.5 text-slate-400 font-bold text-sm">{currency}</span>
               <input
+                id="pay-amount-input"
                 type="number"
                 min="0"
                 step="any"
@@ -124,12 +125,13 @@ export const PaymentFeesCalc: React.FC<Props> = ({ currency }) => {
           </div>
         ) : (
           <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">
+            <label htmlFor="pay-target-net-input" className="text-xs font-bold text-slate-700 block mb-1">
               Desired Take-Home Net Payout ({currency})
             </label>
             <div className="relative">
               <span className="absolute left-3.5 top-2.5 text-slate-400 font-bold text-sm">{currency}</span>
               <input
+                id="pay-target-net-input"
                 type="number"
                 min="0"
                 step="any"
@@ -144,8 +146,9 @@ export const PaymentFeesCalc: React.FC<Props> = ({ currency }) => {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">Percentage Fee (%)</label>
+            <label htmlFor="pay-fee-percent-input" className="text-xs font-bold text-slate-700 block mb-1">Percentage Fee (%)</label>
             <input
+              id="pay-fee-percent-input"
               type="number"
               min="0"
               max="99"
@@ -156,10 +159,11 @@ export const PaymentFeesCalc: React.FC<Props> = ({ currency }) => {
             />
           </div>
           <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">Fixed Fee ({currency})</label>
+            <label htmlFor="pay-fixed-fee-input" className="text-xs font-bold text-slate-700 block mb-1">Fixed Fee ({currency})</label>
             <div className="relative">
               <span className="absolute left-3 top-2 text-slate-400 font-bold text-xs">{currency}</span>
               <input
+                id="pay-fixed-fee-input"
                 type="number"
                 min="0"
                 step="0.01"
