@@ -37,7 +37,7 @@ export const ContentWithRails: React.FC<ContentWithRailsProps> = ({
       {showRails && showLeftRail && (
         <aside
           aria-label="Left Side Advertisement"
-          className="hidden xl:flex flex-col w-[160px] 2xl:w-[180px] shrink-0 sticky top-24 select-none"
+          className="hidden xl:flex flex-col w-[160px] 2xl:w-[180px] shrink-0 sticky top-24 select-none empty:hidden"
         >
           <AdSlot position="rail-left" />
         </aside>
@@ -52,7 +52,7 @@ export const ContentWithRails: React.FC<ContentWithRailsProps> = ({
       {showRails && showRightRail && (
         <aside
           aria-label="Right Side Advertisement"
-          className="hidden xl:flex flex-col w-[160px] 2xl:w-[180px] shrink-0 sticky top-24 select-none"
+          className="hidden xl:flex flex-col w-[160px] 2xl:w-[180px] shrink-0 sticky top-24 select-none empty:hidden"
         >
           <AdSlot position="rail-right" />
         </aside>

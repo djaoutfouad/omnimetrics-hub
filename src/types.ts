@@ -48,6 +48,8 @@ export interface ToolItem {
   featured?: boolean;
   detailedGuide: ToolGuide;
   relatedToolIds: string[];
+  personaImageUrl?: string;
+  personaRole?: string;
 }
 
 export interface ArticleTable {

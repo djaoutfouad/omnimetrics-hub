@@ -42,7 +42,7 @@ export const KnowledgeSection: React.FC<Props> = ({ onSelectArticle }) => {
               </div>
 
               <h3 className="font-extrabold text-[15px] text-slate-900 group-hover:text-emerald-700 transition leading-snug mb-2">
-                <Link to={`/guides/${article.slug || article.id}`}>
+                <Link to={`/blog/${article.slug || article.id}`}>
                   {article.title}
                 </Link>
               </h3>
@@ -61,7 +61,7 @@ export const KnowledgeSection: React.FC<Props> = ({ onSelectArticle }) => {
                 Quick Preview
               </button>
               <Link
-                to={`/guides/${article.slug || article.id}`}
+                to={`/blog/${article.slug || article.id}`}
                 className="text-xs font-bold text-emerald-600 group-hover:text-emerald-700 flex items-center gap-1 transition"
               >
                 <span>Read full guide</span>
